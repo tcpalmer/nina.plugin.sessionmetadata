@@ -1,0 +1,2 @@
+# RemoteCopy NINA Plugin
+
