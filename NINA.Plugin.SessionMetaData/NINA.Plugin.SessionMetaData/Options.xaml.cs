@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace RemoteCopy.NINAPlugin {
+namespace SessionMetaData.NINAPlugin {
 
     [Export(typeof(ResourceDictionary))]
     partial class Options : ResourceDictionary {

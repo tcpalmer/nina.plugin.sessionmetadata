@@ -4,11 +4,11 @@ using System.Runtime.InteropServices;
 
 [assembly: Guid("982F654F-5FEA-46A0-B358-0FCC3707D63C")]
 
-[assembly: AssemblyTitle("RemoteCopy")]
-[assembly: AssemblyDescription("Send image and metadata for each captured image to a remote server")]
+[assembly: AssemblyTitle("SessionMetaData")]
+[assembly: AssemblyDescription("Write metadata for an imaging session")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Tom Palmer")]
-[assembly: AssemblyProduct("RemoteCopy.NINAPlugin")]
+[assembly: AssemblyProduct("SessionMetaData.NINAPlugin")]
 [assembly: AssemblyCopyright("Copyright © 2021")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -21,6 +21,6 @@ using System.Runtime.InteropServices;
 
 [assembly: AssemblyMetadata("License", "MPL-2.0")]
 [assembly: AssemblyMetadata("LicenseURL", "https://www.mozilla.org/en-US/MPL/2.0/")]
-[assembly: AssemblyMetadata("Repository", "https://github.com/tcpalmer/nina.plugin.remotecopy/")]
+[assembly: AssemblyMetadata("Repository", "https://github.com/tcpalmer/nina.plugin.sessionmetadata/")]
 
 [assembly: ComVisible(false)]

@@ -1,4 +1,4 @@
-﻿using RemoteCopy.NINAPlugin.Properties;
+﻿using SessionMetaData.NINAPlugin.Properties;
 using NINA.Core.Utility;
 using NINA.Plugin;
 using NINA.Plugin.Interfaces;
@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RemoteCopy.NINAPlugin {
+namespace SessionMetaData.NINAPlugin {
     /// <summary>
     /// This class exports the IPluginManifest interface and will be used for the general plugin information and options
     /// The base class "PluginBase" will populate all the necessary Manifest Meta Data out of the AssemblyInfo attributes. Please fill these accoringly
@@ -18,10 +18,10 @@ namespace RemoteCopy.NINAPlugin {
     /// The user interface for the settings will be defined by a DataTemplate with the key having the naming convention "<MyPlugin.Name>_Options" where MyPlugin.Name corresponds to the AssemblyTitle - In this template example it is found in the Options.xaml
     /// </summary>
     [Export(typeof(IPluginManifest))]
-    public class RemoteCopyPlugin : PluginBase {
+    public class SessionMetaDataPlugin : PluginBase {
 
         [ImportingConstructor]
-        public RemoteCopyPlugin() {
+        public SessionMetaDataPlugin() {
             if (Settings.Default.UpdateSettings) {
                 Settings.Default.Upgrade();
                 Settings.Default.UpdateSettings = false;

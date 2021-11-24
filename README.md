@@ -1,1 +1,1 @@
-# RemoteCopy NINA Plugin
+# SessionMetaData NINA Plugin
