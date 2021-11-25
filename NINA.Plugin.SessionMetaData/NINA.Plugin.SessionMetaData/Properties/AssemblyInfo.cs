@@ -1,10 +1,9 @@
 ﻿using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-[assembly: Guid("982F654F-5FEA-46A0-B358-0FCC3707D63C")]
+[assembly: Guid("DCB1D37B-F121-4966-99EC-D11410C562B6")]
 
-[assembly: AssemblyTitle("SessionMetaData")]
+[assembly: AssemblyTitle("Session MetaData")]
 [assembly: AssemblyDescription("Write metadata for an imaging session")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Tom Palmer")]

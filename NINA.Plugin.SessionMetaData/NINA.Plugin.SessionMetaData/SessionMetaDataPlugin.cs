@@ -1,13 +1,11 @@
-﻿using SessionMetaData.NINAPlugin.Properties;
-using NINA.Core.Utility;
+﻿using NINA.Core.Utility;
 using NINA.Plugin;
 using NINA.Plugin.Interfaces;
-using System;
-using System.Collections.Generic;
+using NINA.WPF.Base.Interfaces.Mediator;
+using SessionMetaData.NINAPlugin.Properties;
+using System.ComponentModel;
 using System.ComponentModel.Composition;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.CompilerServices;
 
 namespace SessionMetaData.NINAPlugin {
     /// <summary>
@@ -18,25 +16,34 @@ namespace SessionMetaData.NINAPlugin {
     /// The user interface for the settings will be defined by a DataTemplate with the key having the naming convention "<MyPlugin.Name>_Options" where MyPlugin.Name corresponds to the AssemblyTitle - In this template example it is found in the Options.xaml
     /// </summary>
     [Export(typeof(IPluginManifest))]
-    public class SessionMetaDataPlugin : PluginBase {
+    public class SessionMetaDataPlugin : PluginBase, INotifyPropertyChanged {
+
+        SessionMetaDataWatcher watcher;
 
         [ImportingConstructor]
-        public SessionMetaDataPlugin() {
+        public SessionMetaDataPlugin(IImageSaveMediator imageSaveMediator) {
             if (Settings.Default.UpdateSettings) {
                 Settings.Default.Upgrade();
                 Settings.Default.UpdateSettings = false;
                 CoreUtil.SaveSettings(Settings.Default);
             }
+
+            this.watcher = new SessionMetaDataWatcher(imageSaveMediator);
         }
 
-        public string DefaultNotificationMessage {
-            get {
-                return Settings.Default.DefaultNotificationMessage;
-            }
+        public bool SessionMetaDataEnabled {
+            get => Settings.Default.SessionMetaDataEnabled;
             set {
-                Settings.Default.DefaultNotificationMessage = value;
-                CoreUtil.SaveSettings(Settings.Default);
+                Settings.Default.SessionMetaDataEnabled = value;
+                Settings.Default.Save();
+                RaisePropertyChanged();
             }
         }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void RaisePropertyChanged([CallerMemberName] string propertyName = null) {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
     }
 }

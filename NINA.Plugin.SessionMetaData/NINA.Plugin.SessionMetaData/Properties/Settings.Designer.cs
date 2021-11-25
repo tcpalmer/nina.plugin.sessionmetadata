@@ -37,13 +37,13 @@ namespace SessionMetaData.NINAPlugin.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Testing 1, 2, 3")]
-        public string DefaultNotificationMessage {
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool SessionMetaDataEnabled {
             get {
-                return ((string)(this["DefaultNotificationMessage"]));
+                return ((bool)(this["SessionMetaDataEnabled"]));
             }
             set {
-                this["DefaultNotificationMessage"] = value;
+                this["SessionMetaDataEnabled"] = value;
             }
         }
     }

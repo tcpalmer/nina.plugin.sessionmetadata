@@ -5,11 +5,21 @@
     <!--  This data template will be displayed in N.I.N.A. on the options->plugin tab with the datacontext of the TestPlugin instance  -->
     <!--  In order for this datatemplate to be picked correctly, the key has to follow the naming convention of <IPlugin.Name>_Options -->
     <!--  Furthermore the Resource Dictionary has to be exported via code behind export attributes  -->
-    <DataTemplate x:Key="SessionMetaData_Options">
+    <DataTemplate x:Key="Session MetaData_Options">
         <StackPanel DataContext="{Binding}" Orientation="Vertical">
             <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Default Notification Message" />
-                <TextBox MinWidth="50" Text="{Binding DefaultNotificationMessage}" />
+                <TextBlock
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Right"
+                    Width="110">
+                    <TextBlock.Text>Enabled</TextBlock.Text>
+                    <TextBlock.ToolTip>When the Session MetaData plugin is enabled, metadata will be written to image directories.</TextBlock.ToolTip>
+                </TextBlock>
+                <CheckBox
+                    MinWidth="40"
+                    Margin="5,0,0,0"
+                    VerticalAlignment="Center"
+                    IsChecked="{Binding SessionMetaDataEnabled}" />
             </StackPanel>
         </StackPanel>
     </DataTemplate>
