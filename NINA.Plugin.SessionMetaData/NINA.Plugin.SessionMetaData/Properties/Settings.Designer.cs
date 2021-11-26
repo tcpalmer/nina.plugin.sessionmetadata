@@ -46,5 +46,29 @@ namespace SessionMetaData.NINAPlugin.Properties {
                 this["SessionMetaDataEnabled"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool CSVEnabled {
+            get {
+                return ((bool)(this["CSVEnabled"]));
+            }
+            set {
+                this["CSVEnabled"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool JSONEnabled {
+            get {
+                return ((bool)(this["JSONEnabled"]));
+            }
+            set {
+                this["JSONEnabled"] = value;
+            }
+        }
     }
 }
