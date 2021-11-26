@@ -34,6 +34,9 @@ Either or both output types can be enabled.
 
 # Getting Help #
 Ask for help in the #plugin-discussions channel on the NINA project [Discord server](https://discord.com/invite/rWRbVbw).
+
+[Source code repository](https://github.com/tcpalmer/nina.plugin.sessionmetadata)
+[Change log]()
 ")]
 
 [assembly: ComVisible(false)]
