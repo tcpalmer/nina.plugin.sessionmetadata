@@ -1,6 +1,6 @@
 # Session Metadata NINA Plugin
 
-Session Metadata will output additional acquisition and per-image information associated with an imaging session.  The files will be written to the folder containing your images. If Session MetaData is enabled, two types of metadata will be written:
+Session Metadata will output additional acquisition and per-image information associated with an imaging session.  The files will be written to the folder containing your images. If Session Metadata is enabled, two types of metadata will be written:
 
 * AcquisitionDetails: Additional information assciated with the session, including target, telescope, camera, and observing location.  This file will be written once for each new imaging folder.
 * ImageMetaData: Additional information assciated with each captured image, including exposure details, ADU statistics, HFR, detected stars, guiding RMS and more. An aggregate file will be updated for each image written to the folder.

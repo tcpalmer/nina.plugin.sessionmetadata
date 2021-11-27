@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Text.RegularExpressions;
 
 namespace SessionMetaData.NINAPlugin {
 
@@ -195,7 +196,7 @@ namespace SessionMetaData.NINAPlugin {
             }
 
             public ImageMetaDataRecord(ImageSavedEventArgs msg, string ImageFilePath) {
-                ExposureNumber = msg.MetaData.Image.Id;
+                ExposureNumber = msg.MetaData.Image.ExposureNumber;
                 FilePath = ImageFilePath;
                 FilterName = msg.Filter;
                 ExposureStart = msg.MetaData.Image.ExposureStart;
@@ -251,8 +252,8 @@ namespace SessionMetaData.NINAPlugin {
 
             public AcquisitionMetaDataRecord(ImageSavedEventArgs msg) {
                 TargetName = msg.MetaData.Target.Name;
-                RACoordinates = msg.MetaData.Target.Coordinates?.RAString;
-                DECCoordinates = msg.MetaData.Target.Coordinates?.DecString;
+                RACoordinates = ReformatRA(msg.MetaData.Target.Coordinates?.RAString);
+                DECCoordinates = ReformatDEC(msg.MetaData.Target.Coordinates?.DecString);
                 TelescopeName = msg.MetaData.Telescope.Name;
                 FocalLength = msg.MetaData.Telescope.FocalLength;
                 FocalRatio = msg.MetaData.Telescope.FocalRatio;
@@ -262,6 +263,31 @@ namespace SessionMetaData.NINAPlugin {
                 ObserverLatitude = msg.MetaData.Observer.Latitude;
                 ObserverLongitude = msg.MetaData.Observer.Longitude;
                 ObserverElevation = msg.MetaData.Observer.Elevation;
+            }
+
+            public string ReformatRA(string RAString) {
+                try {
+                    string pattern = @"(\d+):(\d+):(\d+)";
+                    if (Regex.IsMatch(RAString, pattern)) {
+                        Match match = Regex.Match(RAString, pattern);
+                        return $"{Zeros(match.Groups[1].Value)}h {Zeros(match.Groups[2].Value)}m {Zeros(match.Groups[3].Value)}s";
+                    }
+                    else {
+                        return RAString;
+                    }
+                }
+                catch (Exception) {
+                    return "";
+                }
+            }
+
+            private string Zeros(string value) {
+                value = value.TrimStart('0');
+                return (value == "") ? "0" : value;
+            }
+
+            public string ReformatDEC(string DECString) {
+                return DECString != null ? DECString : "";
             }
         }
 
