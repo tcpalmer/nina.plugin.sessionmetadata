@@ -14,17 +14,18 @@ namespace SessionMetaData.NINAPlugin {
 
     public class SessionMetaDataWatcher {
 
-        private static string ACQUISITION_FILE_NAME = "AcquisitionDetails";
-        private static string IMAGE_METADATA_FILE_NAME = "ImageMetaData";
-
         private bool SessionMetaDataEnabled;
         private bool CSVEnabled;
         private bool JSONEnabled;
+        private string AcquisitionDetailsFileName;
+        private string ImageMetaDataFileName;
 
         public SessionMetaDataWatcher(IImageSaveMediator imageSaveMediator) {
             SessionMetaDataEnabled = Properties.Settings.Default.SessionMetaDataEnabled;
             CSVEnabled = Properties.Settings.Default.CSVEnabled;
             JSONEnabled = Properties.Settings.Default.JSONEnabled;
+            AcquisitionDetailsFileName = Properties.Settings.Default.AcquisitionDetailsFileName;
+            ImageMetaDataFileName = Properties.Settings.Default.ImageMetaDataFileName;
 
             Properties.Settings.Default.PropertyChanged += SettingsChanged;
             imageSaveMediator.ImageSaved += ImageSaveMeditator_ImageSaved;
@@ -58,9 +59,11 @@ namespace SessionMetaData.NINAPlugin {
             Logger.Trace($"ImageDirectory: {ImageDirectory}");
 
             AcquisitionMetaDataRecord Record = new AcquisitionMetaDataRecord(msg);
+            string acquisitionFileNameSub = Utility.Utility.FileNameTokenSubstitution(AcquisitionDetailsFileName, msg.MetaData);
+            Logger.Debug($"AcquisitionDetails file name: {AcquisitionDetailsFileName} -> {acquisitionFileNameSub}");
 
             if (CSVEnabled) {
-                string AcquisitionFileName = Path.Combine(ImageDirectory, $"{ACQUISITION_FILE_NAME}.csv");
+                string AcquisitionFileName = Path.Combine(ImageDirectory, $"{acquisitionFileNameSub}.csv");
 
                 // Only write this once per image output directory
                 if (!File.Exists(AcquisitionFileName)) {
@@ -77,7 +80,7 @@ namespace SessionMetaData.NINAPlugin {
             }
 
             if (JSONEnabled) {
-                string AcquisitionFileName = Path.Combine(ImageDirectory, $"{ACQUISITION_FILE_NAME}.json");
+                string AcquisitionFileName = Path.Combine(ImageDirectory, $"{acquisitionFileNameSub}.json");
 
                 // Only write this once per image output directory
                 if (!File.Exists(AcquisitionFileName)) {
@@ -103,9 +106,11 @@ namespace SessionMetaData.NINAPlugin {
             Logger.Trace($"ImageDir: {ImageDirectory}");
 
             ImageMetaDataRecord Record = new ImageMetaDataRecord(msg, ImageFilePath);
+            string imageMetaDataFileNameSub = Utility.Utility.FileNameTokenSubstitution(ImageMetaDataFileName, msg.MetaData);
+            Logger.Debug($"ImageMetaData file name: {ImageMetaDataFileName} -> {imageMetaDataFileNameSub}");
 
             if (CSVEnabled) {
-                string ImageMetaDataFileName = Path.Combine(ImageDirectory, $"{IMAGE_METADATA_FILE_NAME}.csv");
+                string ImageMetaDataFileName = Path.Combine(ImageDirectory, $"{imageMetaDataFileNameSub}.csv");
                 Logger.Info($"Writing CSV image metadata: {ImageMetaDataFileName}");
 
                 bool exists = File.Exists(ImageMetaDataFileName);
@@ -122,7 +127,7 @@ namespace SessionMetaData.NINAPlugin {
             }
 
             if (JSONEnabled) {
-                string ImageMetaDataFileName = Path.Combine(ImageDirectory, $"{IMAGE_METADATA_FILE_NAME}.json");
+                string ImageMetaDataFileName = Path.Combine(ImageDirectory, $"{imageMetaDataFileNameSub}.json");
                 Logger.Info($"Writing JSON image metadata: {ImageMetaDataFileName}");
 
                 JsonSerializer serializer = new JsonSerializer();
@@ -165,6 +170,12 @@ namespace SessionMetaData.NINAPlugin {
                     break;
                 case "JSONEnabled":
                     JSONEnabled = Properties.Settings.Default.JSONEnabled;
+                    break;
+                case "AcquisitionDetailsFileName":
+                    AcquisitionDetailsFileName = Properties.Settings.Default.AcquisitionDetailsFileName;
+                    break;
+                case "ImageMetaDataFileName":
+                    ImageMetaDataFileName = Properties.Settings.Default.ImageMetaDataFileName;
                     break;
             }
         }
