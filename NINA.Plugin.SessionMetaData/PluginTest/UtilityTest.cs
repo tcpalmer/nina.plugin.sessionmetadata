@@ -8,7 +8,7 @@ namespace SessionMetaData.NINAPlugin.Test {
     public class UtilityTest {
 
         [Test]
-        public void TestIt() {
+        public void TestFileNameTokenSubstitution() {
 
             string result = Utility.Utility.FileNameTokenSubstitution(null, GenImageMetaData("My Target Name"));
             result.Should().BeNull();
@@ -45,6 +45,24 @@ namespace SessionMetaData.NINAPlugin.Test {
 
             result = Utility.Utility.FileNameTokenSubstitution("AcquisitionDetails:|<>\"/\\?*-$$TARGETNAME$$", GenImageMetaData(new DateTime(2021, 6, 1, 12, 32, 30), "My Target Name"));
             result.Should().Be("AcquisitionDetails-My_Target_Name");
+        }
+
+        [Test]
+        public void TestFormatDouble() {
+            string result = Utility.Utility.FormatDouble(1.2345678);
+            result.Should().Be("1.2346");
+
+            result = Utility.Utility.FormatDouble(1.23);
+            result.Should().Be("1.23");
+
+            result = Utility.Utility.FormatDouble(0.0);
+            result.Should().Be("0");
+
+            result = Utility.Utility.FormatDouble(367.87451480006246);
+            result.Should().Be("367.8745");
+
+            result = Utility.Utility.FormatDouble(0.4510157391181826);
+            result.Should().Be("0.451");
         }
 
         private ImageMetaData GenImageMetaData(string targetName) {
