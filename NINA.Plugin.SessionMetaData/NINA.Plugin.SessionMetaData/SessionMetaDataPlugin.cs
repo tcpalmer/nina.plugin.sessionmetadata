@@ -50,6 +50,24 @@ namespace SessionMetaData.NINAPlugin {
             }
         }
 
+        public string AcquisitionDetailsFileName {
+            get => Settings.Default.AcquisitionDetailsFileName;
+            set {
+                Settings.Default.AcquisitionDetailsFileName = value;
+                Settings.Default.Save();
+                RaisePropertyChanged();
+            }
+        }
+
+        public string ImageMetaDataFileName {
+            get => Settings.Default.ImageMetaDataFileName;
+            set {
+                Settings.Default.ImageMetaDataFileName = value;
+                Settings.Default.Save();
+                RaisePropertyChanged();
+            }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
         protected void RaisePropertyChanged([CallerMemberName] string propertyName = null) {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

@@ -70,5 +70,29 @@ namespace SessionMetaData.NINAPlugin.Properties {
                 this["JSONEnabled"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("AcquisitionDetails")]
+        public string AcquisitionDetailsFileName {
+            get {
+                return ((string)(this["AcquisitionDetailsFileName"]));
+            }
+            set {
+                this["AcquisitionDetailsFileName"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("ImageMetaData")]
+        public string ImageMetaDataFileName {
+            get {
+                return ((string)(this["ImageMetaDataFileName"]));
+            }
+            set {
+                this["ImageMetaDataFileName"] = value;
+            }
+        }
     }
 }

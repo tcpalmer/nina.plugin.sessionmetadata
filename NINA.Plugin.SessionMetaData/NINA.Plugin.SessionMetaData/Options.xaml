@@ -46,6 +46,32 @@
                     VerticalAlignment="Center"
                     IsChecked="{Binding JSONEnabled}" />
             </StackPanel>
+            <Separator Width="20" Height="8" Background="Transparent"/>
+            <GroupBox Margin="-10,0,0,0">
+                <GroupBox.Header>
+                    <TextBlock Text="Custom File Names" FontSize="16"/>
+                </GroupBox.Header>
+                <StackPanel Orientation="Vertical" Margin="-10,0,0,0">
+                    <Separator Width="20" Height="5" Background="Transparent"/>
+                    <TextBlock TextWrapping="Wrap">The output file names can be customized by adding tokens that are replaced at runtime.  The
+                    following tokens are supported: $$DATE$$, $$DATEMINUS12$$, $$DATETIME$$, and $$TARGETNAME$$.  These will behave exactly
+                    like they do when used in an image file pattern (Options > Imaging) with the following exceptions: any spaces (for
+                    example in a target name) are replaced with '_' and any invalid path characters are stripped.  If you use $$DATEMINUS12$$
+                    in your image file pattern to create folders by date, it's recommended you use it here too instead of $$DATE$$.</TextBlock>
+                    <Separator Width="20" Height="15" Background="Transparent"/>
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                        <TextBlock Width="200" Text="Acquisition Details File Name" VerticalAlignment="Center"
+                                   HorizontalAlignment="Right"/>
+                        <TextBox Margin="5,0,0,0" VerticalAlignment="Center" MinWidth="140" Text="{Binding AcquisitionDetailsFileName}" />
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                        <TextBlock Width="200" Text="Image Metadata File Name" VerticalAlignment="Center"
+                                   HorizontalAlignment="Right"/>
+                        <TextBox Margin="5,0,0,0" VerticalAlignment="Center" MinWidth="140" Text="{Binding ImageMetaDataFileName}" />
+                    </StackPanel>
+                </StackPanel>
+            </GroupBox>
         </StackPanel>
     </DataTemplate>
 </ResourceDictionary>

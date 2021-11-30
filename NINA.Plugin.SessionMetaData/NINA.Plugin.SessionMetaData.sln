@@ -13,6 +13,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionIt
 		..\README.md = ..\README.md
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NINA.Plugin.SessionMetaData.Test", "PluginTest\NINA.Plugin.SessionMetaData.Test.csproj", "{69EE7EE1-C886-48EB-B0D5-385E0DCC80C0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,6 +25,10 @@ Global
 		{141704E0-505C-492C-9E74-3B85F1C05D12}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{141704E0-505C-492C-9E74-3B85F1C05D12}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{141704E0-505C-492C-9E74-3B85F1C05D12}.Release|Any CPU.Build.0 = Release|Any CPU
+		{69EE7EE1-C886-48EB-B0D5-385E0DCC80C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{69EE7EE1-C886-48EB-B0D5-385E0DCC80C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{69EE7EE1-C886-48EB-B0D5-385E0DCC80C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{69EE7EE1-C886-48EB-B0D5-385E0DCC80C0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -14,5 +14,11 @@
     <Setting Name="JSONEnabled" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
+    <Setting Name="AcquisitionDetailsFileName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">AcquisitionDetails</Value>
+    </Setting>
+    <Setting Name="ImageMetaDataFileName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">ImageMetaData</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
