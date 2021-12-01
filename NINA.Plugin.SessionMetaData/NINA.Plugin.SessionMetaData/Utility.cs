@@ -34,5 +34,14 @@ namespace SessionMetaData.NINAPlugin.Utility {
             // Perform substitutions and replace any remaining spaces
             return p.GetImageFileString(fileName).Replace(' ', '_');
         }
+
+        /// <summary>
+        /// Format a double, convert back to double
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns>double reformatted</returns>
+        public static Double ReformatDouble(Double value) {
+            return Double.Parse(String.Format("{0:0.####}", value));
+        }
     }
 }
