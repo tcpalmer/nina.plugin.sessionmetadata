@@ -211,19 +211,19 @@ namespace SessionMetaData.NINAPlugin {
                 FilePath = ImageFilePath;
                 FilterName = msg.Filter;
                 ExposureStart = msg.MetaData.Image.ExposureStart;
-                Duration = msg.Duration;
+                Duration = Utility.Utility.ReformatDouble(msg.Duration);
                 Binning = msg.MetaData.Image.Binning?.ToString();
-                CameraTemperature = msg.MetaData.Camera.Temperature;
+                CameraTemperature = Utility.Utility.ReformatDouble(msg.MetaData.Camera.Temperature);
                 Gain = msg.MetaData.Camera.Gain;
                 Offset = msg.MetaData.Camera.Offset;
-                ADUStDev = msg.Statistics.StDev;
-                ADUMean = msg.Statistics.Mean;
-                ADUMedian = msg.Statistics.Median;
+                ADUStDev = Utility.Utility.ReformatDouble(msg.Statistics.StDev);
+                ADUMean = Utility.Utility.ReformatDouble(msg.Statistics.Mean);
+                ADUMedian = Utility.Utility.ReformatDouble(msg.Statistics.Median);
                 ADUMin = msg.Statistics.Min;
                 ADUMax = msg.Statistics.Max;
                 DetectedStars = msg.StarDetectionAnalysis.DetectedStars;
-                HFR = msg.StarDetectionAnalysis.HFR;
-                HFRStDev = msg.StarDetectionAnalysis.HFRStDev;
+                HFR = Utility.Utility.ReformatDouble(msg.StarDetectionAnalysis.HFR);
+                HFRStDev = Utility.Utility.ReformatDouble(msg.StarDetectionAnalysis.HFRStDev);
                 GuidingRMS = GetGuidingRMS(msg.MetaData.Image);
                 GuidingRMSArcSec = GetGuidingRMSArcSec(msg.MetaData.Image);
                 FocuserPosition = msg.MetaData.Focuser.Position;
@@ -266,14 +266,14 @@ namespace SessionMetaData.NINAPlugin {
                 RACoordinates = ReformatRA(msg.MetaData.Target.Coordinates?.RAString);
                 DECCoordinates = ReformatDEC(msg.MetaData.Target.Coordinates?.DecString);
                 TelescopeName = msg.MetaData.Telescope.Name;
-                FocalLength = msg.MetaData.Telescope.FocalLength;
-                FocalRatio = msg.MetaData.Telescope.FocalRatio;
+                FocalLength = Utility.Utility.ReformatDouble(msg.MetaData.Telescope.FocalLength);
+                FocalRatio = Utility.Utility.ReformatDouble(msg.MetaData.Telescope.FocalRatio);
                 CameraName = msg.MetaData.Camera.Name;
-                PixelSize = msg.MetaData.Camera.PixelSize;
+                PixelSize = Utility.Utility.ReformatDouble(msg.MetaData.Camera.PixelSize);
                 BitDepth = msg.Statistics.BitDepth;
-                ObserverLatitude = msg.MetaData.Observer.Latitude;
-                ObserverLongitude = msg.MetaData.Observer.Longitude;
-                ObserverElevation = msg.MetaData.Observer.Elevation;
+                ObserverLatitude = Utility.Utility.ReformatDouble(msg.MetaData.Observer.Latitude);
+                ObserverLongitude = Utility.Utility.ReformatDouble(msg.MetaData.Observer.Longitude);
+                ObserverElevation = Utility.Utility.ReformatDouble(msg.MetaData.Observer.Elevation);
             }
 
             public string ReformatRA(string RAString) {

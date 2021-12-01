@@ -48,21 +48,11 @@ namespace SessionMetaData.NINAPlugin.Test {
         }
 
         [Test]
-        public void TestFormatDouble() {
-            string result = Utility.Utility.FormatDouble(1.2345678);
-            result.Should().Be("1.2346");
-
-            result = Utility.Utility.FormatDouble(1.23);
-            result.Should().Be("1.23");
-
-            result = Utility.Utility.FormatDouble(0.0);
-            result.Should().Be("0");
-
-            result = Utility.Utility.FormatDouble(367.87451480006246);
-            result.Should().Be("367.8745");
-
-            result = Utility.Utility.FormatDouble(0.4510157391181826);
-            result.Should().Be("0.451");
+        public void TestReformatDouble() {
+            Utility.Utility.ReformatDouble(1.2345678).Should().Be(1.2346);
+            Utility.Utility.ReformatDouble(1.23).Should().Be(1.23);
+            Utility.Utility.ReformatDouble(31867.87451480006246).Should().Be(31867.8745);
+            Utility.Utility.ReformatDouble(0.4510157391181826).Should().Be(0.451);
         }
 
         private ImageMetaData GenImageMetaData(string targetName) {
