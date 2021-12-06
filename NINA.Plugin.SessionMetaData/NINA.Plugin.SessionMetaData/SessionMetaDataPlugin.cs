@@ -2,6 +2,7 @@
 using NINA.Plugin;
 using NINA.Plugin.Interfaces;
 using NINA.WPF.Base.Interfaces.Mediator;
+using NINA.WPF.Base.Interfaces.ViewModel;
 using SessionMetaData.NINAPlugin.Properties;
 using System.ComponentModel;
 using System.ComponentModel.Composition;
@@ -13,14 +14,14 @@ namespace SessionMetaData.NINAPlugin {
     public class SessionMetaDataPlugin : PluginBase, INotifyPropertyChanged {
 
         [ImportingConstructor]
-        public SessionMetaDataPlugin(IImageSaveMediator imageSaveMediator) {
+        public SessionMetaDataPlugin(IImageSaveMediator imageSaveMediator, IImageHistoryVM imageHistory) {
             if (Settings.Default.UpdateSettings) {
                 Settings.Default.Upgrade();
                 Settings.Default.UpdateSettings = false;
                 CoreUtil.SaveSettings(Settings.Default);
             }
 
-            new SessionMetaDataWatcher(imageSaveMediator);
+            new SessionMetaDataWatcher(imageSaveMediator, imageHistory);
         }
 
         public bool SessionMetaDataEnabled {

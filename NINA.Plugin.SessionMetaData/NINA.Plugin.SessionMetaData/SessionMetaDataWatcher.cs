@@ -4,6 +4,7 @@ using NINA.Core.Enum;
 using NINA.Core.Utility;
 using NINA.Image.ImageData;
 using NINA.WPF.Base.Interfaces.Mediator;
+using NINA.WPF.Base.Interfaces.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -20,7 +21,7 @@ namespace SessionMetaData.NINAPlugin {
         private string AcquisitionDetailsFileName;
         private string ImageMetaDataFileName;
 
-        public SessionMetaDataWatcher(IImageSaveMediator imageSaveMediator) {
+        public SessionMetaDataWatcher(IImageSaveMediator imageSaveMediator, IImageHistoryVM imageHistory) {
             SessionMetaDataEnabled = Properties.Settings.Default.SessionMetaDataEnabled;
             CSVEnabled = Properties.Settings.Default.CSVEnabled;
             JSONEnabled = Properties.Settings.Default.JSONEnabled;
@@ -29,6 +30,8 @@ namespace SessionMetaData.NINAPlugin {
 
             Properties.Settings.Default.PropertyChanged += SettingsChanged;
             imageSaveMediator.ImageSaved += ImageSaveMeditator_ImageSaved;
+
+            imageHistory.AutoFocusPoints.GetEnumerator();
         }
 
         private void ImageSaveMeditator_ImageSaved(object sender, ImageSavedEventArgs msg) {
