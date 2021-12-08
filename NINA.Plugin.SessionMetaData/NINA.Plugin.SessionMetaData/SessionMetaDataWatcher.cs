@@ -19,6 +19,7 @@ namespace SessionMetaData.NINAPlugin {
         private bool JSONEnabled;
         private string AcquisitionDetailsFileName;
         private string ImageMetaDataFileName;
+        private string AutoFocusRunsFileName;
 
         public SessionMetaDataWatcher(IImageSaveMediator imageSaveMediator) {
             SessionMetaDataEnabled = Properties.Settings.Default.SessionMetaDataEnabled;
@@ -59,7 +60,7 @@ namespace SessionMetaData.NINAPlugin {
             Logger.Trace($"ImageDirectory: {ImageDirectory}");
 
             AcquisitionMetaDataRecord Record = new AcquisitionMetaDataRecord(msg);
-            string acquisitionFileNameSub = Utility.Utility.FileNameTokenSubstitution(AcquisitionDetailsFileName, msg.MetaData);
+            string acquisitionFileNameSub = Utility.Utility.FileNameTokenSubstitution(AcquisitionDetailsFileName, msg);
             Logger.Debug($"AcquisitionDetails file name: {AcquisitionDetailsFileName} -> {acquisitionFileNameSub}");
 
             if (CSVEnabled) {
@@ -106,7 +107,7 @@ namespace SessionMetaData.NINAPlugin {
             Logger.Trace($"ImageDir: {ImageDirectory}");
 
             ImageMetaDataRecord Record = new ImageMetaDataRecord(msg, ImageFilePath);
-            string imageMetaDataFileNameSub = Utility.Utility.FileNameTokenSubstitution(ImageMetaDataFileName, msg.MetaData);
+            string imageMetaDataFileNameSub = Utility.Utility.FileNameTokenSubstitution(ImageMetaDataFileName, msg);
             Logger.Debug($"ImageMetaData file name: {ImageMetaDataFileName} -> {imageMetaDataFileNameSub}");
 
             if (CSVEnabled) {
@@ -177,6 +178,9 @@ namespace SessionMetaData.NINAPlugin {
                 case "ImageMetaDataFileName":
                     ImageMetaDataFileName = Properties.Settings.Default.ImageMetaDataFileName;
                     break;
+                case "AutoFocusRunsFileName":
+                    AutoFocusRunsFileName = Properties.Settings.Default.AutoFocusRunsFileName;
+                    break;
             }
         }
 
@@ -187,7 +191,8 @@ namespace SessionMetaData.NINAPlugin {
             public DateTime ExposureStart { get; set; }
             public double Duration { get; set; }
             public string Binning { get; set; }
-            public double CameraTemperature { get; set; }
+            public double CameraTemp { get; set; }
+            public double CameraTargetTemp { get; set; }
             public int Gain { get; set; }
             public int Offset { get; set; }
             public double ADUStDev { get; set; }
@@ -200,7 +205,13 @@ namespace SessionMetaData.NINAPlugin {
             public double HFRStDev { get; set; }
             public string GuidingRMS { get; set; }
             public string GuidingRMSArcSec { get; set; }
+            public string GuidingRMSRA { get; set; }
+            public string GuidingRMSRAArcSec { get; set; }
+            public string GuidingRMSDEC { get; set; }
+            public string GuidingRMSDECArcSec { get; set; }
             public int? FocuserPosition { get; set; }
+            public double FocuserTemp { get; set; }
+            public double RotatorPosition { get; set; }
             public string PierSide { get; set; }
 
             public ImageMetaDataRecord() {
@@ -213,29 +224,42 @@ namespace SessionMetaData.NINAPlugin {
                 ExposureStart = msg.MetaData.Image.ExposureStart;
                 Duration = Utility.Utility.ReformatDouble(msg.Duration);
                 Binning = msg.MetaData.Image.Binning?.ToString();
-                CameraTemperature = Utility.Utility.ReformatDouble(msg.MetaData.Camera.Temperature);
+
+                CameraTemp = Utility.Utility.ReformatDouble(msg.MetaData.Camera.Temperature);
+                CameraTargetTemp = Utility.Utility.ReformatDouble(msg.MetaData.Camera.SetPoint);
+
                 Gain = msg.MetaData.Camera.Gain;
                 Offset = msg.MetaData.Camera.Offset;
+
                 ADUStDev = Utility.Utility.ReformatDouble(msg.Statistics.StDev);
                 ADUMean = Utility.Utility.ReformatDouble(msg.Statistics.Mean);
                 ADUMedian = Utility.Utility.ReformatDouble(msg.Statistics.Median);
                 ADUMin = msg.Statistics.Min;
                 ADUMax = msg.Statistics.Max;
+
                 DetectedStars = msg.StarDetectionAnalysis.DetectedStars;
                 HFR = Utility.Utility.ReformatDouble(msg.StarDetectionAnalysis.HFR);
                 HFRStDev = Utility.Utility.ReformatDouble(msg.StarDetectionAnalysis.HFRStDev);
-                GuidingRMS = GetGuidingRMS(msg.MetaData.Image);
-                GuidingRMSArcSec = GetGuidingRMSArcSec(msg.MetaData.Image);
+
+                GuidingRMS = GetGuidingMetric(msg.MetaData.Image, msg.MetaData.Image?.RecordedRMS?.Total);
+                GuidingRMSArcSec = GetGuidingMetricArcSec(msg.MetaData.Image, msg.MetaData.Image?.RecordedRMS?.Total);
+                GuidingRMSRA = GetGuidingMetric(msg.MetaData.Image, msg.MetaData.Image?.RecordedRMS?.RA);
+                GuidingRMSRAArcSec = GetGuidingMetricArcSec(msg.MetaData.Image, msg.MetaData.Image?.RecordedRMS?.RA);
+                GuidingRMSDEC = GetGuidingMetric(msg.MetaData.Image, msg.MetaData.Image?.RecordedRMS?.Dec);
+                GuidingRMSDECArcSec = GetGuidingMetricArcSec(msg.MetaData.Image, msg.MetaData.Image?.RecordedRMS?.Dec);
+
                 FocuserPosition = msg.MetaData.Focuser.Position;
+                FocuserTemp = Utility.Utility.ReformatDouble(msg.MetaData.Focuser.Temperature);
+                RotatorPosition = Utility.Utility.ReformatDouble(msg.MetaData.Rotator.Position);
                 PierSide = GetPierSide(msg.MetaData.Telescope.SideOfPier);
             }
 
-            private string GetGuidingRMS(ImageParameter image) {
-                return image.RecordedRMS != null ? image.RecordedRMS.Total.ToString() : "n/a";
+            private string GetGuidingMetric(ImageParameter image, double? metric) {
+                return (image.RecordedRMS != null && metric != null) ? metric.ToString() : "n/a";
             }
 
-            private string GetGuidingRMSArcSec(ImageParameter image) {
-                return image.RecordedRMS != null ? (image.RecordedRMS.Total * image.RecordedRMS.Scale).ToString() : "n/a";
+            private string GetGuidingMetricArcSec(ImageParameter image, double? metric) {
+                return (image.RecordedRMS != null && metric != null) ? (metric * image.RecordedRMS.Scale).ToString() : "n/a";
             }
 
             private string GetPierSide(PierSide sideOfPier) {

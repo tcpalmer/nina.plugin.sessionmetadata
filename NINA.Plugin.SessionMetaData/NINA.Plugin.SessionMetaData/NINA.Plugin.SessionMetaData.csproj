@@ -258,6 +258,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="SessionAutoFocusWatcher.cs" />
     <Compile Include="Utility.cs" />
     <Compile Include="SessionMetaDataWatcher.cs" />
     <Compile Include="SessionMetaDataPlugin.cs" />

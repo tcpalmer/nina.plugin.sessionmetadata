@@ -1,5 +1,6 @@
 using FluentAssertions;
 using NINA.Image.ImageData;
+using NINA.WPF.Base.Interfaces.Mediator;
 using NUnit.Framework;
 using System;
 
@@ -40,6 +41,9 @@ namespace SessionMetaData.NINAPlugin.Test {
             result = Utility.Utility.FileNameTokenSubstitution("foo\\$$TARGETNAME$$\\bar", GenImageMetaData("My Target Name"));
             result.Should().Be("fooMy_Target_Namebar");
 
+            result = Utility.Utility.FileNameTokenSubstitution("foo\\$$TARGETNAME$$-$$FILTER$$\\bar", GenImageMetaData("My Target Name"));
+            result.Should().Be("fooMy_Target_Name-Foobar");
+
             result = Utility.Utility.FileNameTokenSubstitution("Acquisition/Details-$$DATEMINUS12$$", GenImageMetaData(new DateTime(2021, 6, 1, 12, 32, 30), "My Target Name"));
             result.Should().Be("AcquisitionDetails-2021-06-01");
 
@@ -55,17 +59,22 @@ namespace SessionMetaData.NINAPlugin.Test {
             Utility.Utility.ReformatDouble(0.4510157391181826).Should().Be(0.451);
         }
 
-        private ImageMetaData GenImageMetaData(string targetName) {
+        private ImageSavedEventArgs GenImageMetaData(string targetName) {
             return GenImageMetaData(new DateTime(), targetName);
         }
 
-        private ImageMetaData GenImageMetaData(DateTime dateTime, string targetName) {
+        private ImageSavedEventArgs GenImageMetaData(DateTime dateTime, string targetName) {
             ImageMetaData metadata = new ImageMetaData();
             metadata.Image.ExposureStart = dateTime;
             TargetParameter tp = new TargetParameter();
             tp.Name = targetName;
             metadata.Target = tp;
-            return metadata;
+
+            ImageSavedEventArgs args = new ImageSavedEventArgs();
+            args.MetaData = metadata;
+            args.Filter = "Foo";
+
+            return args;
         }
     }
 }
