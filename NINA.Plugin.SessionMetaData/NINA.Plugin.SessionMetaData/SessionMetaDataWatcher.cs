@@ -203,12 +203,12 @@ namespace SessionMetaData.NINAPlugin {
             public int DetectedStars { get; set; }
             public double HFR { get; set; }
             public double HFRStDev { get; set; }
-            public string GuidingRMS { get; set; }
-            public string GuidingRMSArcSec { get; set; }
-            public string GuidingRMSRA { get; set; }
-            public string GuidingRMSRAArcSec { get; set; }
-            public string GuidingRMSDEC { get; set; }
-            public string GuidingRMSDECArcSec { get; set; }
+            public double GuidingRMS { get; set; }
+            public double GuidingRMSArcSec { get; set; }
+            public double GuidingRMSRA { get; set; }
+            public double GuidingRMSRAArcSec { get; set; }
+            public double GuidingRMSDEC { get; set; }
+            public double GuidingRMSDECArcSec { get; set; }
             public int? FocuserPosition { get; set; }
             public double FocuserTemp { get; set; }
             public double RotatorPosition { get; set; }
@@ -254,12 +254,12 @@ namespace SessionMetaData.NINAPlugin {
                 PierSide = GetPierSide(msg.MetaData.Telescope.SideOfPier);
             }
 
-            private string GetGuidingMetric(ImageParameter image, double? metric) {
-                return (image.RecordedRMS != null && metric != null) ? metric.ToString() : "n/a";
+            private double GetGuidingMetric(ImageParameter image, double? metric) {
+                return (image.RecordedRMS != null && metric != null) ? Utility.Utility.ReformatDouble((double)metric) : 0.0;
             }
 
-            private string GetGuidingMetricArcSec(ImageParameter image, double? metric) {
-                return (image.RecordedRMS != null && metric != null) ? (metric * image.RecordedRMS.Scale).ToString() : "n/a";
+            private double GetGuidingMetricArcSec(ImageParameter image, double? metric) {
+                return (image.RecordedRMS != null && metric != null) ? Utility.Utility.ReformatDouble((double)(metric * image.RecordedRMS.Scale)) : 0.0;
             }
 
             private string GetPierSide(PierSide sideOfPier) {

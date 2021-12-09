@@ -89,18 +89,6 @@
                                  Text="{Binding ImageMetaDataFileName}" />
                     </StackPanel>
 
-                    <StackPanel Orientation="Horizontal"
-                                Margin="0,0,0,5">
-                        <TextBlock Width="200"
-                                   Text="AutoFocus Runs File Name"
-                                   VerticalAlignment="Center"
-                                   HorizontalAlignment="Right" />
-                        <TextBox Margin="5,0,0,0"
-                                 VerticalAlignment="Center"
-                                 MinWidth="140"
-                                 Text="{Binding AutoFocusRunsFileName}" />
-                    </StackPanel>
-
                 </StackPanel>
             </GroupBox>
         </StackPanel>
