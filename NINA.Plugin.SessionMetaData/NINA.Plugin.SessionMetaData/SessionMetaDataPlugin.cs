@@ -1,7 +1,9 @@
 ﻿using NINA.Core.Utility;
 using NINA.Plugin;
 using NINA.Plugin.Interfaces;
+using NINA.Profile.Interfaces;
 using NINA.WPF.Base.Interfaces.Mediator;
+using NINA.WPF.Base.Interfaces.ViewModel;
 using SessionMetaData.NINAPlugin.Properties;
 using System.ComponentModel;
 using System.ComponentModel.Composition;
@@ -13,7 +15,7 @@ namespace SessionMetaData.NINAPlugin {
     public class SessionMetaDataPlugin : PluginBase, INotifyPropertyChanged {
 
         [ImportingConstructor]
-        public SessionMetaDataPlugin(IImageSaveMediator imageSaveMediator) {
+        public SessionMetaDataPlugin(IProfileService profileService, IImageSaveMediator imageSaveMediator, IImageHistoryVM imageHistory) {
             if (Settings.Default.UpdateSettings) {
                 Settings.Default.Upgrade();
                 Settings.Default.UpdateSettings = false;
@@ -21,6 +23,10 @@ namespace SessionMetaData.NINAPlugin {
             }
 
             new SessionMetaDataWatcher(imageSaveMediator);
+
+            // Putting this on hold, hopefully plugins will get more access via:
+            // https://bitbucket.org/Isbeorn/nina/issues/1005/request-to-provide-plugin-access-to
+            // new SessionAutoFocusWatcher(profileService, imageHistory);
         }
 
         public bool SessionMetaDataEnabled {

@@ -94,5 +94,17 @@ namespace SessionMetaData.NINAPlugin.Properties {
                 this["ImageMetaDataFileName"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("AutoFocusRuns")]
+        public string AutoFocusRunsFileName {
+            get {
+                return ((string)(this["AutoFocusRunsFileName"]));
+            }
+            set {
+                this["AutoFocusRunsFileName"] = value;
+            }
+        }
     }
 }

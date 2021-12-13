@@ -1,75 +1,94 @@
-﻿<ResourceDictionary
-    x:Class="SessionMetaData.NINAPlugin.Options"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+﻿<ResourceDictionary x:Class="SessionMetaData.NINAPlugin.Options"
+                    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <DataTemplate x:Key="Session Metadata_Options">
-        <StackPanel DataContext="{Binding}" Orientation="Vertical"  Margin="0,10,0,0">
-            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                <TextBlock
-                    VerticalAlignment="Center"
-                    HorizontalAlignment="Right"
-                    Width="110">
+        <StackPanel DataContext="{Binding}"
+                    Orientation="Vertical"
+                    Margin="0,10,0,0">
+            <StackPanel Orientation="Horizontal"
+                        Margin="0,0,0,5">
+                <TextBlock VerticalAlignment="Center"
+                           HorizontalAlignment="Right"
+                           Width="110">
                     <TextBlock.Text>Plugin Enabled</TextBlock.Text>
                     <TextBlock.ToolTip>When the plugin is enabled, metadata will be written to image folders. Set to Off to completely disable.</TextBlock.ToolTip>
                 </TextBlock>
-                <CheckBox
-                    MinWidth="40"
-                    Margin="5,0,0,0"
-                    VerticalAlignment="Center"
-                    IsChecked="{Binding SessionMetaDataEnabled}" />
+                <CheckBox MinWidth="40"
+                          Margin="5,0,0,0"
+                          VerticalAlignment="Center"
+                          IsChecked="{Binding SessionMetaDataEnabled}" />
             </StackPanel>
-            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                <TextBlock
-                    VerticalAlignment="Center"
-                    HorizontalAlignment="Right"
-                    Width="110">
+            <StackPanel Orientation="Horizontal"
+                        Margin="0,0,0,5">
+                <TextBlock VerticalAlignment="Center"
+                           HorizontalAlignment="Right"
+                           Width="110">
                     <TextBlock.Text>CSV Enabled</TextBlock.Text>
                     <TextBlock.ToolTip>Enable CSV format output files</TextBlock.ToolTip>
                 </TextBlock>
-                <CheckBox
-                    MinWidth="40"
-                    Margin="5,0,0,0"
-                    VerticalAlignment="Center"
-                    IsChecked="{Binding CSVEnabled}" />
+                <CheckBox MinWidth="40"
+                          Margin="5,0,0,0"
+                          VerticalAlignment="Center"
+                          IsChecked="{Binding CSVEnabled}" />
             </StackPanel>
-            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                <TextBlock
-                    VerticalAlignment="Center"
-                    HorizontalAlignment="Right"
-                    Width="110">
+            <StackPanel Orientation="Horizontal"
+                        Margin="0,0,0,5">
+                <TextBlock VerticalAlignment="Center"
+                           HorizontalAlignment="Right"
+                           Width="110">
                     <TextBlock.Text>JSON Enabled</TextBlock.Text>
                     <TextBlock.ToolTip>Enable JSON format output files</TextBlock.ToolTip>
                 </TextBlock>
-                <CheckBox
-                    MinWidth="40"
-                    Margin="5,0,0,0"
-                    VerticalAlignment="Center"
-                    IsChecked="{Binding JSONEnabled}" />
+                <CheckBox MinWidth="40"
+                          Margin="5,0,0,0"
+                          VerticalAlignment="Center"
+                          IsChecked="{Binding JSONEnabled}" />
             </StackPanel>
-            <Separator Width="20" Height="8" Background="Transparent"/>
+            <Separator Width="20"
+                       Height="8"
+                       Background="Transparent" />
             <GroupBox Margin="-10,0,0,0">
                 <GroupBox.Header>
-                    <TextBlock Text="Custom File Names" FontSize="16"/>
+                    <TextBlock Text="Custom File Names"
+                               FontSize="16" />
                 </GroupBox.Header>
-                <StackPanel Orientation="Vertical" Margin="-10,0,0,0">
-                    <Separator Width="20" Height="5" Background="Transparent"/>
+                <StackPanel Orientation="Vertical"
+                            Margin="-10,0,0,0">
+                    <Separator Width="20"
+                               Height="5"
+                               Background="Transparent" />
                     <TextBlock TextWrapping="Wrap">The output file names can be customized by adding tokens that are replaced at runtime.  The
-                    following tokens are supported: $$DATE$$, $$DATEMINUS12$$, $$DATETIME$$, and $$TARGETNAME$$.  These will behave exactly
+                    following tokens are supported: $$DATE$$, $$DATEMINUS12$$, $$DATETIME$$, $$TARGETNAME$$, and $$FILTER$$.  These will behave exactly
                     like they do when used in an image file pattern (Options > Imaging) with the following exceptions: any spaces (for
                     example in a target name) are replaced with '_' and any invalid path characters are stripped.  If you use $$DATEMINUS12$$
                     in your image file pattern to create folders by date, it's recommended you use it here too instead of $$DATE$$.</TextBlock>
-                    <Separator Width="20" Height="15" Background="Transparent"/>
-                    <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                        <TextBlock Width="200" Text="Acquisition Details File Name" VerticalAlignment="Center"
-                                   HorizontalAlignment="Right"/>
-                        <TextBox Margin="5,0,0,0" VerticalAlignment="Center" MinWidth="140" Text="{Binding AcquisitionDetailsFileName}" />
+                    <Separator Width="20"
+                               Height="15"
+                               Background="Transparent" />
+                    <StackPanel Orientation="Horizontal"
+                                Margin="0,0,0,5">
+                        <TextBlock Width="200"
+                                   Text="Acquisition Details File Name"
+                                   VerticalAlignment="Center"
+                                   HorizontalAlignment="Right" />
+                        <TextBox Margin="5,0,0,0"
+                                 VerticalAlignment="Center"
+                                 MinWidth="140"
+                                 Text="{Binding AcquisitionDetailsFileName}" />
                     </StackPanel>
 
-                    <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                        <TextBlock Width="200" Text="Image Metadata File Name" VerticalAlignment="Center"
-                                   HorizontalAlignment="Right"/>
-                        <TextBox Margin="5,0,0,0" VerticalAlignment="Center" MinWidth="140" Text="{Binding ImageMetaDataFileName}" />
+                    <StackPanel Orientation="Horizontal"
+                                Margin="0,0,0,5">
+                        <TextBlock Width="200"
+                                   Text="Image Metadata File Name"
+                                   VerticalAlignment="Center"
+                                   HorizontalAlignment="Right" />
+                        <TextBox Margin="5,0,0,0"
+                                 VerticalAlignment="Center"
+                                 MinWidth="140"
+                                 Text="{Binding ImageMetaDataFileName}" />
                     </StackPanel>
+
                 </StackPanel>
             </GroupBox>
         </StackPanel>

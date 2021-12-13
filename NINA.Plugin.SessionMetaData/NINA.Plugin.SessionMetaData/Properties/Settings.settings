@@ -20,5 +20,8 @@
     <Setting Name="ImageMetaDataFileName" Type="System.String" Scope="User">
       <Value Profile="(Default)">ImageMetaData</Value>
     </Setting>
+    <Setting Name="AutoFocusRunsFileName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">AutoFocusRuns</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

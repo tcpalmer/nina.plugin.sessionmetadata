@@ -1,8 +1,8 @@
 ﻿using NINA.Core.Model;
 using NINA.Image.ImageData;
+using NINA.WPF.Base.Interfaces.Mediator;
 using System;
 using System.IO;
-using System.Text.RegularExpressions;
 
 namespace SessionMetaData.NINAPlugin.Utility {
 
@@ -10,19 +10,22 @@ namespace SessionMetaData.NINAPlugin.Utility {
 
         /// <summary>
         /// Uses the core NINA image file pattern tokens to support dynamic file names.  The following tokens are supported:
-        /// $$DATE$$, $$DATEMINUS12$$, $$DATETIME$$, $$TARGETNAME$$
+        /// $$DATE$$, $$DATEMINUS12$$, $$DATETIME$$, $$TARGETNAME$$, $$FILTER$$
         /// </summary>
         /// <param name="fileName"></param>
-        /// <param name="metadata"></param>
+        /// <param name="eventArgs"></param>
         /// <returns>file name with tokens substituted</returns>
-        public static string FileNameTokenSubstitution(string fileName, ImageMetaData metadata) {
+        public static string FileNameTokenSubstitution(string fileName, ImageSavedEventArgs eventArgs) {
             if (String.IsNullOrEmpty(fileName)) {
                 return fileName;
             }
 
+            ImageMetaData metadata = eventArgs.MetaData;
             ImagePatterns p = new ImagePatterns();
+
             p.Set(ImagePatternKeys.DateTime, metadata.Image.ExposureStart.ToString("yyyy-MM-dd_HH-mm-ss"));
             p.Set(ImagePatternKeys.TargetName, metadata.Target.Name);
+            p.Set(ImagePatternKeys.Filter, eventArgs.Filter);
             p.Set(ImagePatternKeys.Date, metadata.Image.ExposureStart.ToString("yyyy-MM-dd"));
             if (metadata.Image.ExposureStart > DateTime.MinValue.AddHours(12)) {
                 p.Set(ImagePatternKeys.DateMinus12, metadata.Image.ExposureStart.AddHours(-12).ToString("yyyy-MM-dd"));

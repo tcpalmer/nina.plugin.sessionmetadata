@@ -1,5 +1,11 @@
 # Session Metadata
 
+## 1.2.0.0 - 2021-12-13
+* Added additional per-image fields: CameraTargetTemp, FocuserTemp, RotatorPosition, guiding RMS in RA and DEC
+* Added support for $$FILTER$$ in file names
+* Fixed a bug in directory path encoding
+* Added a plugin logo
+
 ## 1.1.0.0 - 2021-12-01
 * Added support for dynamic output file names using a subset of the image file pattern tokens
 * Restricted the output of numerics to four decimal places in the output files
