@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Session Metadata")]
 [assembly: AssemblyDescription("Write additional metadata for an imaging session")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Tom Palmer")]
+[assembly: AssemblyCompany("Tom Palmer @tcpalmer")]
 [assembly: AssemblyProduct("SessionMetaData.NINAPlugin")]
 [assembly: AssemblyCopyright("Copyright © 2021")]
 [assembly: AssemblyTrademark("")]

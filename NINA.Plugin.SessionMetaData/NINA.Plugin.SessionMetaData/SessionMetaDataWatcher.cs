@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Web;
 
 namespace SessionMetaData.NINAPlugin {
 
@@ -54,10 +55,8 @@ namespace SessionMetaData.NINAPlugin {
         }
 
         private void WriteAcquisitionMetaData(ImageSavedEventArgs msg) {
-            string ImageFilePath = msg.PathToImage.ToString();
-            Logger.Trace($"ImageFilePath: {ImageFilePath}");
-            string ImageDirectory = GetImageDirectory(ImageFilePath);
-            Logger.Trace($"ImageDirectory: {ImageDirectory}");
+            string ImageDirectory = GetImageDirectory(msg.PathToImage);
+            Logger.Debug($"ImageDirectory: {ImageDirectory}");
 
             AcquisitionMetaDataRecord Record = new AcquisitionMetaDataRecord(msg);
             string acquisitionFileNameSub = Utility.Utility.FileNameTokenSubstitution(AcquisitionDetailsFileName, msg);
@@ -100,13 +99,10 @@ namespace SessionMetaData.NINAPlugin {
         }
 
         private void WriteImageMetaData(ImageSavedEventArgs msg) {
+            string ImageDirectory = GetImageDirectory(msg.PathToImage);
+            Logger.Debug($"ImageDirectory: {ImageDirectory}");
 
-            string ImageFilePath = msg.PathToImage.ToString();
-            Logger.Trace($"ImageFilePath: {ImageFilePath}");
-            string ImageDirectory = GetImageDirectory(ImageFilePath);
-            Logger.Trace($"ImageDir: {ImageDirectory}");
-
-            ImageMetaDataRecord Record = new ImageMetaDataRecord(msg, ImageFilePath);
+            ImageMetaDataRecord Record = new ImageMetaDataRecord(msg, GetImageFilePath(msg.PathToImage));
             string imageMetaDataFileNameSub = Utility.Utility.FileNameTokenSubstitution(ImageMetaDataFileName, msg);
             Logger.Debug($"ImageMetaData file name: {ImageMetaDataFileName} -> {imageMetaDataFileNameSub}");
 
@@ -326,8 +322,12 @@ namespace SessionMetaData.NINAPlugin {
             }
         }
 
-        private string GetImageDirectory(string ImageFilePath) {
-            return Path.GetDirectoryName(ImageFilePath.Substring(8)); // skip 'file:///'
+        private string GetImageDirectory(Uri imageUri) {
+            return Path.GetDirectoryName(HttpUtility.UrlDecode(imageUri.AbsolutePath));
+        }
+
+        private string GetImageFilePath(Uri imageUri) {
+            return HttpUtility.UrlDecode(imageUri.AbsolutePath);
         }
     }
 }
