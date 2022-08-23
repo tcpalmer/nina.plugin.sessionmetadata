@@ -289,6 +289,7 @@ namespace SessionMetaData.NINAPlugin {
             public double FocuserTemp { get; set; }
             public double RotatorPosition { get; set; }
             public string PierSide { get; set; }
+            public double Airmass { get; set; }
 
             public ImageMetaDataRecord() {
             }
@@ -328,6 +329,8 @@ namespace SessionMetaData.NINAPlugin {
                 FocuserTemp = Utility.Utility.ReformatDouble(msg.MetaData.Focuser.Temperature);
                 RotatorPosition = Utility.Utility.ReformatDouble(msg.MetaData.Rotator.Position);
                 PierSide = GetPierSide(msg.MetaData.Telescope.SideOfPier);
+
+                Airmass = Utility.Utility.ReformatDouble(msg.MetaData.Telescope.Airmass);
             }
 
             private double GetGuidingMetric(ImageParameter image, double? metric) {
