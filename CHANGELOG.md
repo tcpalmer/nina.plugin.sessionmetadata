@@ -1,7 +1,8 @@
 # Session Metadata
 
 ## 1.3.0.0 - 2002-08-XX
-* Added output of weather metrics
+* Added output of weather metrics (separate file)
+* Added output of airmass
 * Updated to latest NINA stable dependencies
 
 ## 1.2.0.0 - 2021-12-13
