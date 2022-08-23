@@ -1,6 +1,7 @@
 # Session Metadata
 
-## 1.2.0.1 - 2002-XX-XX
+## 1.3.0.0 - 2002-08-XX
+* Added output of weather metrics
 * Updated to latest NINA stable dependencies
 
 ## 1.2.0.0 - 2021-12-13

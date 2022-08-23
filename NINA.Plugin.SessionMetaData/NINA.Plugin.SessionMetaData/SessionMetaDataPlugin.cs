@@ -56,6 +56,15 @@ namespace SessionMetaData.NINAPlugin {
             }
         }
 
+        public bool WeatherEnabled {
+            get => Settings.Default.WeatherEnabled;
+            set {
+                Settings.Default.WeatherEnabled = value;
+                Settings.Default.Save();
+                RaisePropertyChanged();
+            }
+        }
+
         public string AcquisitionDetailsFileName {
             get => Settings.Default.AcquisitionDetailsFileName;
             set {
@@ -69,6 +78,15 @@ namespace SessionMetaData.NINAPlugin {
             get => Settings.Default.ImageMetaDataFileName;
             set {
                 Settings.Default.ImageMetaDataFileName = value;
+                Settings.Default.Save();
+                RaisePropertyChanged();
+            }
+        }
+
+        public string WeatherMetaDataFileName {
+            get => Settings.Default.WeatherMetaDataFileName;
+            set {
+                Settings.Default.WeatherMetaDataFileName = value;
                 Settings.Default.Save();
                 RaisePropertyChanged();
             }

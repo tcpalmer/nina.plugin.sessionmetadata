@@ -23,5 +23,11 @@
     <Setting Name="AutoFocusRunsFileName" Type="System.String" Scope="User">
       <Value Profile="(Default)">AutoFocusRuns</Value>
     </Setting>
+    <Setting Name="WeatherEnabled" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="WeatherMetaDataFileName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">WeatherData</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

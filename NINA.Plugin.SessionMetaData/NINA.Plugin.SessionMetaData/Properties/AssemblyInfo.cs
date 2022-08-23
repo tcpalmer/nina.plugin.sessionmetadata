@@ -8,12 +8,12 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Tom Palmer @tcpalmer")]
 [assembly: AssemblyProduct("SessionMetaData.NINAPlugin")]
-[assembly: AssemblyCopyright("Copyright © 2021")]
+[assembly: AssemblyCopyright("Copyright © 2022")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
-[assembly: AssemblyVersion("1.2.0.1")]
-[assembly: AssemblyFileVersion("1.2.0.1")]
+[assembly: AssemblyVersion("1.3.0.0")]
+[assembly: AssemblyFileVersion("1.3.0.0")]
 
 // The minimum Version of N.I.N.A. that this plugin is compatible with
 [assembly: AssemblyMetadata("MinimumApplicationVersion", "2.0.0.9001")]
@@ -23,17 +23,18 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyMetadata("Repository", "https://github.com/tcpalmer/nina.plugin.sessionmetadata/")]
 [assembly: AssemblyMetadata("FeaturedImageURL", "https://raw.githubusercontent.com/tcpalmer/nina.plugin.sessionmetadata/main/NINA.Plugin.SessionMetaData/assets/metadata-tag-icon.png?raw=true")]
 
-[assembly: AssemblyMetadata("LongDescription", @"Session Metadata will output additional acquisition and per-image information associated with an imaging session.  The files will be written to the folder containing your images. If Session Metadata is enabled, two types of metadata will be written:
+[assembly: AssemblyMetadata("LongDescription", @"Session Metadata will output additional acquisition and per-image information associated with an imaging session.  The files will be written to the folder containing your images. If Session Metadata is enabled, three types of metadata will be written:
 
 * Acquisition Details: Additional information assciated with the session, including target, telescope, camera, and observing location.  This file will be written once for each new imaging folder.
 * Image Metadata: Additional information associated with each captured image, including exposure details, ADU statistics, HFR, detected stars, guiding RMS and more. An aggregate file will be updated for each image written to the folder.
+* Weather Metrics: If enabled, weather metrics as reported by the connected observing conditions data source.
 
 There is certainly overlap between this plugin and other parts of NINA.  For example, NINA will write metadata to the FITS or XISF image headers - but it's not really convenient to access for a set of images.  You can also click save in the HFR History panel in the Imaging tab to save a CSV file of image metadata - but you have to remember to do it.  This plugin automates the metadata capture process and makes it easy to view and compare data.
 
 # Output Formats #
 Either or both output types can be enabled.
-* If CSV output is enabled, CSV files will be written: AcquisitionDetails.csv and ImageMetaData.csv (containing one row per image).
-* If JSON output is enabled, JSON files will be written: AcquisitionDetails.json and ImageMetaData.json (containing one list element per image).
+* If CSV output is enabled, CSV files will be written: AcquisitionDetails.csv, ImageMetaData.csv (one row per image), and WeatherMetaData.csv (one row per image).
+* If JSON output is enabled, JSON files will be written: AcquisitionDetails.json, ImageMetaData.json (one list element per image), and WeatherMetaData.json (one list element per image).
 
 The output file names can be customized - see above.
 

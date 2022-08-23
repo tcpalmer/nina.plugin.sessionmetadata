@@ -18,16 +18,20 @@ namespace SessionMetaData.NINAPlugin {
         private bool SessionMetaDataEnabled;
         private bool CSVEnabled;
         private bool JSONEnabled;
+        private bool WeatherEnabled;
         private string AcquisitionDetailsFileName;
         private string ImageMetaDataFileName;
+        private string WeatherMetaDataFileName;
         private string AutoFocusRunsFileName;
 
         public SessionMetaDataWatcher(IImageSaveMediator imageSaveMediator) {
             SessionMetaDataEnabled = Properties.Settings.Default.SessionMetaDataEnabled;
             CSVEnabled = Properties.Settings.Default.CSVEnabled;
             JSONEnabled = Properties.Settings.Default.JSONEnabled;
+            WeatherEnabled = Properties.Settings.Default.WeatherEnabled;
             AcquisitionDetailsFileName = Properties.Settings.Default.AcquisitionDetailsFileName;
             ImageMetaDataFileName = Properties.Settings.Default.ImageMetaDataFileName;
+            WeatherMetaDataFileName = Properties.Settings.Default.WeatherMetaDataFileName;
 
             Properties.Settings.Default.PropertyChanged += SettingsChanged;
             imageSaveMediator.ImageSaved += ImageSaveMeditator_ImageSaved;
@@ -48,6 +52,7 @@ namespace SessionMetaData.NINAPlugin {
             try {
                 WriteAcquisitionMetaData(msg);
                 WriteImageMetaData(msg);
+                WriteWeatherMetaData(msg);
             }
             catch (Exception e) {
                 Logger.Warning($"session metadata save failed: {e.Message}");
@@ -157,6 +162,75 @@ namespace SessionMetaData.NINAPlugin {
             }
         }
 
+        private void WriteWeatherMetaData(ImageSavedEventArgs msg) {
+
+            if (!WeatherEnabled) {
+                return;
+            }
+
+            if (msg.MetaData.WeatherData == null) {
+                Logger.Warning("weather data output is enabled but no weather metadata is present");
+                return;
+            }
+
+            string ImageDirectory = GetImageDirectory(msg.PathToImage);
+            Logger.Debug($"ImageDirectory: {ImageDirectory}");
+
+            WeatherMetaDataRecord Record = new WeatherMetaDataRecord(msg);
+            string weatherMetaDataFileNameSub = Utility.Utility.FileNameTokenSubstitution(WeatherMetaDataFileName, msg);
+            Logger.Debug($"WeatherMetaData file name: {WeatherMetaDataFileName} -> {weatherMetaDataFileNameSub}");
+
+            if (CSVEnabled) {
+                string WeatherMetaDataFileName = Path.Combine(ImageDirectory, $"{weatherMetaDataFileNameSub}.csv");
+                Logger.Info($"Writing CSV weather metadata: {WeatherMetaDataFileName}");
+
+                bool exists = File.Exists(WeatherMetaDataFileName);
+
+                using (var writer = File.AppendText(WeatherMetaDataFileName))
+                using (var csv = new CsvWriter(writer, System.Globalization.CultureInfo.InvariantCulture)) {
+                    if (!exists) {
+                        csv.WriteHeader<WeatherMetaDataRecord>();
+                        csv.NextRecord();
+                    }
+                    csv.WriteRecord(Record);
+                    csv.NextRecord();
+                }
+            }
+
+            if (JSONEnabled) {
+                string WeatherMetaDataFileName = Path.Combine(ImageDirectory, $"{weatherMetaDataFileNameSub}.json");
+                Logger.Info($"Writing JSON weather metadata: {WeatherMetaDataFileName}");
+
+                JsonSerializer serializer = new JsonSerializer();
+                serializer.NullValueHandling = NullValueHandling.Include;
+                serializer.Formatting = Formatting.Indented;
+
+                List<WeatherMetaDataRecord> Records;
+
+                bool exists = File.Exists(WeatherMetaDataFileName);
+
+                if (exists) {
+                    string json = File.ReadAllText(WeatherMetaDataFileName);
+                    Records = JsonConvert.DeserializeObject<List<WeatherMetaDataRecord>>(json);
+                    Records.Add(Record);
+
+                    using (StreamWriter sw = new StreamWriter(WeatherMetaDataFileName))
+                    using (JsonWriter writer = new JsonTextWriter(sw)) {
+                        serializer.Serialize(writer, Records);
+                    }
+                }
+                else {
+                    Records = new List<WeatherMetaDataRecord>();
+                    Records.Add(Record);
+
+                    using (StreamWriter sw = new StreamWriter(WeatherMetaDataFileName))
+                    using (JsonWriter writer = new JsonTextWriter(sw)) {
+                        serializer.Serialize(writer, Records);
+                    }
+                }
+            }
+        }
+
         void SettingsChanged(object sender, PropertyChangedEventArgs e) {
             switch (e.PropertyName) {
                 case "SessionMetaDataEnabled":
@@ -168,6 +242,9 @@ namespace SessionMetaData.NINAPlugin {
                 case "JSONEnabled":
                     JSONEnabled = Properties.Settings.Default.JSONEnabled;
                     break;
+                case "WeatherEnabled":
+                    WeatherEnabled = Properties.Settings.Default.WeatherEnabled;
+                    break;
                 case "AcquisitionDetailsFileName":
                     AcquisitionDetailsFileName = Properties.Settings.Default.AcquisitionDetailsFileName;
                     break;
@@ -176,6 +253,9 @@ namespace SessionMetaData.NINAPlugin {
                     break;
                 case "AutoFocusRunsFileName":
                     AutoFocusRunsFileName = Properties.Settings.Default.AutoFocusRunsFileName;
+                    break;
+                case "WeatherMetaDataFileName":
+                    WeatherMetaDataFileName = Properties.Settings.Default.WeatherMetaDataFileName;
                     break;
             }
         }
@@ -267,6 +347,46 @@ namespace SessionMetaData.NINAPlugin {
             }
         }
 
+        private class WeatherMetaDataRecord {
+            public int ExposureNumber { get; set; }
+            public DateTime ExposureStart { get; set; }
+            public double Temperature { get; set; }
+            public double DewPoint { get; set; }
+            public double Humidity { get; set; }
+            public double Pressure { get; set; }
+            public double WindSpeed { get; set; }
+            public double WindDirection { get; set; }
+            public double WindGust { get; set; }
+            public double CloudCover { get; set; }
+            public double SkyTemperature { get; set; }
+            public double SkyBrightness { get; set; }
+            public double SkyQuality { get; set; }
+
+            public WeatherMetaDataRecord() {
+            }
+
+            public WeatherMetaDataRecord(ImageSavedEventArgs msg) {
+                ExposureNumber = msg.MetaData.Image.ExposureNumber;
+                ExposureStart = msg.MetaData.Image.ExposureStart;
+                WeatherDataParameter weatherData = msg.MetaData.WeatherData;
+                Temperature = SafeRound(weatherData.Temperature, 1);
+                DewPoint = SafeRound(weatherData.DewPoint, 1);
+                Humidity = weatherData.Humidity;
+                Pressure = weatherData.Pressure;
+                WindSpeed = weatherData.WindSpeed;
+                WindDirection = weatherData.WindDirection;
+                WindGust = weatherData.WindGust;
+                CloudCover = weatherData.CloudCover;
+                SkyTemperature = SafeRound(weatherData.SkyTemperature, 1);
+                SkyBrightness = weatherData.SkyBrightness;
+                SkyQuality = weatherData.SkyQuality;
+            }
+
+            private double SafeRound(double value, int digits) {
+                return (Double.IsNaN(value)) ? value : Math.Round(value, digits);
+            }
+        }
+
         private class AcquisitionMetaDataRecord {
             public string TargetName { get; }
             public string RACoordinates { get; }
@@ -329,5 +449,6 @@ namespace SessionMetaData.NINAPlugin {
         private string GetImageFilePath(Uri imageUri) {
             return HttpUtility.UrlDecode(imageUri.AbsolutePath);
         }
+
     }
 }
