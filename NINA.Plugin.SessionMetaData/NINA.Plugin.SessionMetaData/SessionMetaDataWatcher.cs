@@ -63,6 +63,13 @@ namespace SessionMetaData.NINAPlugin {
             string ImageDirectory = GetImageDirectory(msg.PathToImage);
             Logger.Debug($"ImageDirectory: {ImageDirectory}");
 
+            /* TODO: to support a relative path prepended to the file names:
+             *   - Pull off any path before the last \ and run that through token substitution
+             *   - Put the remaining string through token substitution
+             *   - Add any path prefix to the image dir
+             *   - Compose the full path name
+             */
+
             AcquisitionMetaDataRecord Record = new AcquisitionMetaDataRecord(msg);
             string acquisitionFileNameSub = Utility.Utility.FileNameTokenSubstitution(AcquisitionDetailsFileName, msg);
             Logger.Debug($"AcquisitionDetails file name: {AcquisitionDetailsFileName} -> {acquisitionFileNameSub}");
