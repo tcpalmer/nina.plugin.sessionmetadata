@@ -22,6 +22,7 @@ namespace SessionMetaData.NINAPlugin {
         private string AcquisitionDetailsFileName;
         private string ImageMetaDataFileName;
         private string WeatherMetaDataFileName;
+        private string MetaDataOutputDirectory;
         private string AutoFocusRunsFileName;
 
         public SessionMetaDataWatcher(IImageSaveMediator imageSaveMediator) {
@@ -32,6 +33,7 @@ namespace SessionMetaData.NINAPlugin {
             AcquisitionDetailsFileName = Properties.Settings.Default.AcquisitionDetailsFileName;
             ImageMetaDataFileName = Properties.Settings.Default.ImageMetaDataFileName;
             WeatherMetaDataFileName = Properties.Settings.Default.WeatherMetaDataFileName;
+            MetaDataOutputDirectory = Properties.Settings.Default.MetaDataOutputDirectory;
 
             Properties.Settings.Default.PropertyChanged += SettingsChanged;
             imageSaveMediator.ImageSaved += ImageSaveMeditator_ImageSaved;
@@ -50,32 +52,24 @@ namespace SessionMetaData.NINAPlugin {
             }
 
             try {
-                WriteAcquisitionMetaData(msg);
-                WriteImageMetaData(msg);
-                WriteWeatherMetaData(msg);
+                string outputDirectory = GetOutputDirectory(msg);
+                WriteAcquisitionMetaData(msg, outputDirectory);
+                WriteImageMetaData(msg, outputDirectory);
+                WriteWeatherMetaData(msg, outputDirectory);
             }
             catch (Exception e) {
                 Logger.Warning($"session metadata save failed: {e.Message}");
             }
         }
 
-        private void WriteAcquisitionMetaData(ImageSavedEventArgs msg) {
-            string ImageDirectory = GetImageDirectory(msg.PathToImage);
-            Logger.Debug($"ImageDirectory: {ImageDirectory}");
-
-            /* TODO: to support a relative path prepended to the file names:
-             *   - Pull off any path before the last \ and run that through token substitution
-             *   - Put the remaining string through token substitution
-             *   - Add any path prefix to the image dir
-             *   - Compose the full path name
-             */
+        private void WriteAcquisitionMetaData(ImageSavedEventArgs msg, string outputDirectory) {
 
             AcquisitionMetaDataRecord Record = new AcquisitionMetaDataRecord(msg);
-            string acquisitionFileNameSub = Utility.Utility.FileNameTokenSubstitution(AcquisitionDetailsFileName, msg);
-            Logger.Debug($"AcquisitionDetails file name: {AcquisitionDetailsFileName} -> {acquisitionFileNameSub}");
+            string finalFileName = GetFinalOutputFileName(outputDirectory, AcquisitionDetailsFileName, msg);
+            Logger.Debug($"AcquisitionDetails file name: {AcquisitionDetailsFileName} -> {finalFileName}");
 
             if (CSVEnabled) {
-                string AcquisitionFileName = Path.Combine(ImageDirectory, $"{acquisitionFileNameSub}.csv");
+                string AcquisitionFileName = $"{finalFileName}.csv";
 
                 // Only write this once per image output directory
                 if (!File.Exists(AcquisitionFileName)) {
@@ -92,7 +86,7 @@ namespace SessionMetaData.NINAPlugin {
             }
 
             if (JSONEnabled) {
-                string AcquisitionFileName = Path.Combine(ImageDirectory, $"{acquisitionFileNameSub}.json");
+                string AcquisitionFileName = $"{finalFileName}.json";
 
                 // Only write this once per image output directory
                 if (!File.Exists(AcquisitionFileName)) {
@@ -110,16 +104,14 @@ namespace SessionMetaData.NINAPlugin {
             }
         }
 
-        private void WriteImageMetaData(ImageSavedEventArgs msg) {
-            string ImageDirectory = GetImageDirectory(msg.PathToImage);
-            Logger.Debug($"ImageDirectory: {ImageDirectory}");
+        private void WriteImageMetaData(ImageSavedEventArgs msg, string outputDirectory) {
 
             ImageMetaDataRecord Record = new ImageMetaDataRecord(msg, GetImageFilePath(msg.PathToImage));
-            string imageMetaDataFileNameSub = Utility.Utility.FileNameTokenSubstitution(ImageMetaDataFileName, msg);
-            Logger.Debug($"ImageMetaData file name: {ImageMetaDataFileName} -> {imageMetaDataFileNameSub}");
+            string finalFileName = GetFinalOutputFileName(outputDirectory, ImageMetaDataFileName, msg);
+            Logger.Debug($"ImageMetaData file name: {ImageMetaDataFileName} -> {finalFileName}");
 
             if (CSVEnabled) {
-                string ImageMetaDataFileName = Path.Combine(ImageDirectory, $"{imageMetaDataFileNameSub}.csv");
+                string ImageMetaDataFileName = $"{finalFileName}.csv";
                 Logger.Info($"Writing CSV image metadata: {ImageMetaDataFileName}");
 
                 bool exists = File.Exists(ImageMetaDataFileName);
@@ -136,7 +128,7 @@ namespace SessionMetaData.NINAPlugin {
             }
 
             if (JSONEnabled) {
-                string ImageMetaDataFileName = Path.Combine(ImageDirectory, $"{imageMetaDataFileNameSub}.json");
+                string ImageMetaDataFileName = $"{finalFileName}.json";
                 Logger.Info($"Writing JSON image metadata: {ImageMetaDataFileName}");
 
                 JsonSerializer serializer = new JsonSerializer();
@@ -169,7 +161,7 @@ namespace SessionMetaData.NINAPlugin {
             }
         }
 
-        private void WriteWeatherMetaData(ImageSavedEventArgs msg) {
+        private void WriteWeatherMetaData(ImageSavedEventArgs msg, string outputDirectory) {
 
             if (!WeatherEnabled) {
                 return;
@@ -180,15 +172,12 @@ namespace SessionMetaData.NINAPlugin {
                 return;
             }
 
-            string ImageDirectory = GetImageDirectory(msg.PathToImage);
-            Logger.Debug($"ImageDirectory: {ImageDirectory}");
-
             WeatherMetaDataRecord Record = new WeatherMetaDataRecord(msg);
-            string weatherMetaDataFileNameSub = Utility.Utility.FileNameTokenSubstitution(WeatherMetaDataFileName, msg);
-            Logger.Debug($"WeatherMetaData file name: {WeatherMetaDataFileName} -> {weatherMetaDataFileNameSub}");
+            string finalFileName = GetFinalOutputFileName(outputDirectory, WeatherMetaDataFileName, msg);
+            Logger.Debug($"WeatherMetaData file name: {WeatherMetaDataFileName} -> {finalFileName}");
 
             if (CSVEnabled) {
-                string WeatherMetaDataFileName = Path.Combine(ImageDirectory, $"{weatherMetaDataFileNameSub}.csv");
+                string WeatherMetaDataFileName = $"{finalFileName}.csv";
                 Logger.Info($"Writing CSV weather metadata: {WeatherMetaDataFileName}");
 
                 bool exists = File.Exists(WeatherMetaDataFileName);
@@ -205,7 +194,7 @@ namespace SessionMetaData.NINAPlugin {
             }
 
             if (JSONEnabled) {
-                string WeatherMetaDataFileName = Path.Combine(ImageDirectory, $"{weatherMetaDataFileNameSub}.json");
+                string WeatherMetaDataFileName = $"{finalFileName}.json";
                 Logger.Info($"Writing JSON weather metadata: {WeatherMetaDataFileName}");
 
                 JsonSerializer serializer = new JsonSerializer();
@@ -263,6 +252,9 @@ namespace SessionMetaData.NINAPlugin {
                     break;
                 case "WeatherMetaDataFileName":
                     WeatherMetaDataFileName = Properties.Settings.Default.WeatherMetaDataFileName;
+                    break;
+                case "MetaDataOutputDirectory":
+                    MetaDataOutputDirectory = Properties.Settings.Default.MetaDataOutputDirectory;
                     break;
             }
         }
@@ -458,6 +450,64 @@ namespace SessionMetaData.NINAPlugin {
 
         private string GetImageFilePath(Uri imageUri) {
             return HttpUtility.UrlDecode(imageUri.AbsolutePath);
+        }
+
+        private string GetOutputDirectory(ImageSavedEventArgs msg) {
+
+            if (String.IsNullOrEmpty(MetaDataOutputDirectory)) {
+                Logger.Debug("MetaDataOutputDirectory is empty, defaulting to image save directory");
+                return GetImageDirectory(msg.PathToImage);
+            }
+
+            if (!Directory.Exists(MetaDataOutputDirectory)) {
+                Logger.Warning($"MetaDataOutputDirectory does not exist ({MetaDataOutputDirectory}), defaulting to image save directory");
+                return GetImageDirectory(msg.PathToImage);
+            }
+
+            if (!IsDirectoryWriteable(MetaDataOutputDirectory)) {
+                Logger.Warning($"MetaDataOutputDirectory is not writable ({MetaDataOutputDirectory}), defaulting to image save directory");
+                return GetImageDirectory(msg.PathToImage);
+            }
+
+            return MetaDataOutputDirectory;
+        }
+
+        private bool IsDirectoryWriteable(string path) {
+            try {
+                System.Security.AccessControl.DirectorySecurity ds = Directory.GetAccessControl(path);
+                return true;
+            }
+            catch (Exception e) {
+                Logger.Trace($"exception checking access to directory ({MetaDataOutputDirectory}): {e.Message}");
+                return false;
+            }
+        }
+
+        private string GetFinalOutputFileName(string outputDirectory, string metadataFileName, ImageSavedEventArgs msg) {
+            List<string> pathComponents = new List<string>();
+            pathComponents.Add(outputDirectory);
+
+            // Extract any relative path prefix from the base metadata file name
+            int pos = metadataFileName.LastIndexOf(@"\");
+            string pathPrefix = (pos != -1) ? metadataFileName.Substring(0, pos) : "";
+
+            // Run each directory of the path prefix through token substitution
+            if (pathPrefix.Length > 0) {
+                string[] dirs = pathPrefix.Split('\\');
+                foreach (string dir in dirs) {
+                    pathComponents.Add(Utility.Utility.FileNameTokenSubstitution(dir, msg));
+                }
+            }
+
+            // Create any new sub-directories
+            Directory.CreateDirectory(String.Join("\\", pathComponents.ToArray()));
+
+            // Run the remaining metadata file name through token substitution
+            string strippedMetadataFileName = (pos != -1) ? metadataFileName.Substring(pos) : metadataFileName;
+            pathComponents.Add(Utility.Utility.FileNameTokenSubstitution(strippedMetadataFileName, msg));
+
+            // Combine all components into final path
+            return Path.Combine(pathComponents.ToArray());
         }
 
     }

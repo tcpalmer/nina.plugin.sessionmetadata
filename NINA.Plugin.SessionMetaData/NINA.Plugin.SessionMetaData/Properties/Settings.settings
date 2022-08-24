@@ -29,5 +29,8 @@
     <Setting Name="WeatherMetaDataFileName" Type="System.String" Scope="User">
       <Value Profile="(Default)">WeatherData</Value>
     </Setting>
+    <Setting Name="MetaDataOutputDirectory" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
   </Settings>
 </SettingsFile>
