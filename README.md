@@ -13,7 +13,7 @@ Either or both output types can be enabled.
 * If CSV output is enabled, CSV files will be written: AcquisitionDetails.csv and ImageMetaData.csv (containing one row per image).
 * If JSON output is enabled, JSON files will be written: AcquisitionDetails.json and ImageMetaData.json (containing one list element per image).
 
-The output file names can be customized to whatever you prefer - including inserting dynamic token values like \\$\\$DATE\\$\\$, \$\$DATEMINUS12$$, \$\$DATETIME\$\$, \$\$TARGETNAME\$\$, and \$\$FILTER\$\$.  See the options for details.
+The output file names can be customized to whatever you prefer - including inserting dynamic token values like \$\$DATE\$\$, \$\$DATEMINUS12$$, \$\$DATETIME\$\$, \$\$TARGETNAME\$\$, and \$\$FILTER\$\$.  See the options for details.
 
 ## Getting Help
 Ask for help in the #plugin-discussions channel on the NINA project [Discord server](https://discord.com/invite/rWRbVbw).
