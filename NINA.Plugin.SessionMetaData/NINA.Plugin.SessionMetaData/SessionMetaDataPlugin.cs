@@ -1,4 +1,5 @@
-﻿using NINA.Core.Utility;
+﻿using Microsoft.WindowsAPICodePack.Dialogs;
+using NINA.Core.Utility;
 using NINA.Plugin;
 using NINA.Plugin.Interfaces;
 using NINA.Profile.Interfaces;
@@ -7,15 +8,22 @@ using NINA.WPF.Base.Interfaces.ViewModel;
 using SessionMetaData.NINAPlugin.Properties;
 using System.ComponentModel;
 using System.ComponentModel.Composition;
+using System.IO;
 using System.Runtime.CompilerServices;
+using System.Windows.Input;
 
 namespace SessionMetaData.NINAPlugin {
 
     [Export(typeof(IPluginManifest))]
     public class SessionMetaDataPlugin : PluginBase, INotifyPropertyChanged {
 
+        public ICommand MetadataOutputDirectoryDialogCommand { get; private set; }
+
         [ImportingConstructor]
         public SessionMetaDataPlugin(IProfileService profileService, IImageSaveMediator imageSaveMediator, IImageHistoryVM imageHistory) {
+
+            MetadataOutputDirectoryDialogCommand = new RelayCommand(OpenMetadataOutputDirectoryDialog);
+
             if (Settings.Default.UpdateSettings) {
                 Settings.Default.Upgrade();
                 Settings.Default.UpdateSettings = false;
@@ -92,9 +100,31 @@ namespace SessionMetaData.NINAPlugin {
             }
         }
 
+        public string MetaDataOutputDirectory {
+            get => Settings.Default.MetaDataOutputDirectory;
+            set {
+                Settings.Default.MetaDataOutputDirectory = value;
+                Settings.Default.Save();
+                RaisePropertyChanged();
+            }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
         protected void RaisePropertyChanged([CallerMemberName] string propertyName = null) {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        private void OpenMetadataOutputDirectoryDialog(object obj) {
+
+            CommonOpenFileDialog dialog = new CommonOpenFileDialog();
+            dialog.Title = "Metadata Output Directory";
+            dialog.IsFolderPicker = true;
+            dialog.InitialDirectory = MetaDataOutputDirectory;
+
+            CommonFileDialogResult result = dialog.ShowDialog();
+            if (result == CommonFileDialogResult.Ok) {
+                MetaDataOutputDirectory = dialog.FileName;
+            }
         }
     }
 }

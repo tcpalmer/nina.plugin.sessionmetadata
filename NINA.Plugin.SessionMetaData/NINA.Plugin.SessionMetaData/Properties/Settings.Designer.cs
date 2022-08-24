@@ -130,5 +130,17 @@ namespace SessionMetaData.NINAPlugin.Properties {
                 this["WeatherMetaDataFileName"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string MetaDataOutputDirectory {
+            get {
+                return ((string)(this["MetaDataOutputDirectory"]));
+            }
+            set {
+                this["MetaDataOutputDirectory"] = value;
+            }
+        }
     }
 }

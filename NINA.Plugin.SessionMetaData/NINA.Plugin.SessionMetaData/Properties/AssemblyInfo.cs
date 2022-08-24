@@ -23,9 +23,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyMetadata("Repository", "https://github.com/tcpalmer/nina.plugin.sessionmetadata/")]
 [assembly: AssemblyMetadata("FeaturedImageURL", "https://raw.githubusercontent.com/tcpalmer/nina.plugin.sessionmetadata/main/NINA.Plugin.SessionMetaData/assets/metadata-tag-icon.png?raw=true")]
 
-[assembly: AssemblyMetadata("LongDescription", @"Session Metadata will output additional acquisition and per-image information associated with an imaging session.  The files will be written to the folder containing your images. If Session Metadata is enabled, three types of metadata will be written:
+[assembly: AssemblyMetadata("LongDescription", @"Session Metadata will output additional acquisition and per-image information associated with an imaging session.  The files will be written to the folder containing your images (see options for overriding this). If Session Metadata is enabled, three types of metadata will be written:
 
-* Acquisition Details: Additional information assciated with the session, including target, telescope, camera, and observing location.  This file will be written once for each new imaging folder.
+* Acquisition Details: Additional information associated with the session, including target, telescope, camera, and observing location.  This file will be written once for each new imaging folder.
 * Image Metadata: Additional information associated with each captured image, including exposure details, ADU statistics, HFR, detected stars, guiding RMS and more. An aggregate file will be updated for each image written to the folder.
 * Weather Metrics: If enabled, weather metrics as reported by the connected observing conditions data source.
 
@@ -36,7 +36,7 @@ Either or both output types can be enabled.
 * If CSV output is enabled, CSV files will be written: AcquisitionDetails.csv, ImageMetaData.csv (one row per image), and WeatherMetaData.csv (one row per image).
 * If JSON output is enabled, JSON files will be written: AcquisitionDetails.json, ImageMetaData.json (one list element per image), and WeatherMetaData.json (one list element per image).
 
-The output file names can be customized - see above.
+The output file names and location can be customized - see above.
 
 # Getting Help #
 * Ask for help in the #plugin-discussions channel on the NINA project [Discord server](https://discord.com/invite/rWRbVbw).

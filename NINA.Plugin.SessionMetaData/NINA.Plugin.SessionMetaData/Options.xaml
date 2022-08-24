@@ -82,6 +82,13 @@
                         example in a target name) are replaced with '_' and any invalid path characters are stripped.  If you use $$DATEMINUS12$$
                         in your image file pattern to create folders by date, it's recommended you use it here too instead of $$DATE$$.
                     </TextBlock>
+                    <Separator Width="20"
+                               Height="3"
+                               Background="Transparent" />
+                    <TextBlock TextWrapping="Wrap">
+                        You can also prefix a file name with a relative directory path.  For example 'metadata\$$TARGETNAME$$\ImageMetaData will work as expected.
+                        In this example a 'metadata' directory would be created under the Metadata Output Directory (see below).
+                    </TextBlock>
                     <Separator
                         Width="20"
                         Height="15"
@@ -123,6 +130,45 @@
                             Margin="5,0,0,0"
                             VerticalAlignment="Center"
                             Text="{Binding WeatherMetaDataFileName}" />
+                    </StackPanel>
+
+                    <Separator Width="20"
+                               Height="5"
+                               Background="Transparent" />
+                    <TextBlock TextWrapping="Wrap">
+                        By default, metadata files will be created under the same directory that contains your images.  However, you can override that behavior by
+                        explicitly setting the root directory for all metadata files.  This directory must exist and must be writable.  If not, the plugin will
+                        fall back to the default behavior.  Check your NINA log to see if this might be happening.
+                    </TextBlock>
+                    <Separator Width="20"
+                               Height="5"
+                               Background="Transparent" />
+
+                    <StackPanel Margin="0,0,0,5"
+                                Orientation="Horizontal">
+                        <TextBlock Width="200"
+                                   HorizontalAlignment="Right"
+                                   VerticalAlignment="Center"
+                                   Text="Metadata output directory" />
+                        <TextBox MinWidth="140"
+                                 Margin="5,0,0,0"
+                                 VerticalAlignment="Center">
+                            <TextBox.Text>
+                                <Binding Path="MetaDataOutputDirectory" UpdateSourceTrigger="LostFocus" />
+                            </TextBox.Text>
+                        </TextBox>
+                        <Button Grid.Column="2"
+                                Width="20"
+                                Height="20"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Command="{Binding MetadataOutputDirectoryDialogCommand}">
+                            <Path Margin="2,10,2,0"
+                                  Data="{StaticResource DotsSVG}"
+                                  Fill="{StaticResource ButtonForegroundBrush}"
+                                  Stretch="Uniform" />
+                        </Button>
                     </StackPanel>
 
                 </StackPanel>
