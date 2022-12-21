@@ -1,5 +1,8 @@
 # Session Metadata
 
+## 2.3.0.0 - 2022-12-22
+* Migrated to .NET 7 for NINA 3
+
 ## 1.3.0.0 - 2002-08-XX
 * Added much better support for specifying the location of metadata files
 * Added output of weather metrics (separate file)

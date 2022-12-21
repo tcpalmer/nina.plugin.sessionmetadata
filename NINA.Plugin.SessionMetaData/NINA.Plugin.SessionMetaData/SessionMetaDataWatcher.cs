@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Security.AccessControl;
 using System.Text.RegularExpressions;
 using System.Web;
 
@@ -474,7 +475,8 @@ namespace SessionMetaData.NINAPlugin {
 
         private bool IsDirectoryWriteable(string path) {
             try {
-                System.Security.AccessControl.DirectorySecurity ds = Directory.GetAccessControl(path);
+                DirectorySecurity ds = new DirectoryInfo(path).GetAccessControl();
+                //System.Security.AccessControl.DirectorySecurity ds = Directory.GetAccessControl(path);
                 return true;
             }
             catch (Exception e) {
