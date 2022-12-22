@@ -476,7 +476,6 @@ namespace SessionMetaData.NINAPlugin {
         private bool IsDirectoryWriteable(string path) {
             try {
                 DirectorySecurity ds = new DirectoryInfo(path).GetAccessControl();
-                //System.Security.AccessControl.DirectorySecurity ds = Directory.GetAccessControl(path);
                 return true;
             }
             catch (Exception e) {

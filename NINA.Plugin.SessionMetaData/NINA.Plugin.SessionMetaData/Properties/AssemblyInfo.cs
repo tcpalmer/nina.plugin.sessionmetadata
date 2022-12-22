@@ -39,7 +39,7 @@ Either or both output types can be enabled.
 The output file names and location can be customized - see above.
 
 # Getting Help #
-* Ask for help in the #plugin-discussions channel on the NINA project [Discord server](https://discord.com/invite/rWRbVbw).
+* Ask for help (tag @tcpalmer) in the #plugin-discussions channel on the NINA project [Discord server](https://discord.com/invite/rWRbVbw).
 * [Source code](https://github.com/tcpalmer/nina.plugin.sessionmetadata)
 * [Change log](https://github.com/tcpalmer/nina.plugin.sessionmetadata/blob/main/CHANGELOG.md)
 
