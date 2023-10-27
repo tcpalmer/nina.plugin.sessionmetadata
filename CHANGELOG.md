@@ -1,6 +1,6 @@
 # Session Metadata
 
-## 2.3.4.0 - 2022-10-XX
+## 2.3.4.0 - 2022-10-27
 * Added FWHM and eccentricity (calculated by Hocus Focus) to the output metrics.
 
 ## 2.3.0.0 - 2022-12-22
