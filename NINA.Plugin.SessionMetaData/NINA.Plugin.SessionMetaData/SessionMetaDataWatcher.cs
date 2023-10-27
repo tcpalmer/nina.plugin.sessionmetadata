@@ -1,8 +1,10 @@
 ﻿using CsvHelper;
+using Namotion.Reflection;
 using Newtonsoft.Json;
 using NINA.Core.Enum;
 using NINA.Core.Utility;
 using NINA.Image.ImageData;
+using NINA.Image.Interfaces;
 using NINA.WPF.Base.Interfaces.Mediator;
 using System;
 using System.Collections.Generic;
@@ -279,6 +281,8 @@ namespace SessionMetaData.NINAPlugin {
             public int DetectedStars { get; set; }
             public double HFR { get; set; }
             public double HFRStDev { get; set; }
+            public double FWHM { get; set; }
+            public double Eccentricity { get; set; }
             public double GuidingRMS { get; set; }
             public double GuidingRMSArcSec { get; set; }
             public double GuidingRMSRA { get; set; }
@@ -318,6 +322,9 @@ namespace SessionMetaData.NINAPlugin {
                 HFR = Utility.Utility.ReformatDouble(msg.StarDetectionAnalysis.HFR);
                 HFRStDev = Utility.Utility.ReformatDouble(msg.StarDetectionAnalysis.HFRStDev);
 
+                FWHM = GetHocusFocusMetric(msg.StarDetectionAnalysis, "FWHM");
+                Eccentricity = GetHocusFocusMetric(msg.StarDetectionAnalysis, "Eccentricity");
+
                 GuidingRMS = GetGuidingMetric(msg.MetaData.Image, msg.MetaData.Image?.RecordedRMS?.Total);
                 GuidingRMSArcSec = GetGuidingMetricArcSec(msg.MetaData.Image, msg.MetaData.Image?.RecordedRMS?.Total);
                 GuidingRMSRA = GetGuidingMetric(msg.MetaData.Image, msg.MetaData.Image?.RecordedRMS?.RA);
@@ -331,6 +338,12 @@ namespace SessionMetaData.NINAPlugin {
                 PierSide = GetPierSide(msg.MetaData.Telescope.SideOfPier);
 
                 Airmass = Utility.Utility.ReformatDouble(msg.MetaData.Telescope.Airmass);
+            }
+
+            private double GetHocusFocusMetric(IStarDetectionAnalysis starDetectionAnalysis, string propertyName) {
+                return starDetectionAnalysis.HasProperty(propertyName) ?
+                    (Double)starDetectionAnalysis.GetType().GetProperty(propertyName).GetValue(starDetectionAnalysis) :
+                    Double.NaN;
             }
 
             private double GetGuidingMetric(ImageParameter image, double? metric) {

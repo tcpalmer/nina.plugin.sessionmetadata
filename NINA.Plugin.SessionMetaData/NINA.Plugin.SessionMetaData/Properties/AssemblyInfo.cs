@@ -12,11 +12,11 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
-[assembly: AssemblyVersion("2.3.0.0")]
-[assembly: AssemblyFileVersion("2.3.0.0")]
+[assembly: AssemblyVersion("2.3.4.0")]
+[assembly: AssemblyFileVersion("2.3.4.0")]
 
 // The minimum Version of N.I.N.A. that this plugin is compatible with
-[assembly: AssemblyMetadata("MinimumApplicationVersion", "3.0.0.1001")]
+[assembly: AssemblyMetadata("MinimumApplicationVersion", "3.0.0.1032")]
 
 [assembly: AssemblyMetadata("License", "MPL-2.0")]
 [assembly: AssemblyMetadata("LicenseURL", "https://www.mozilla.org/en-US/MPL/2.0/")]
@@ -26,7 +26,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyMetadata("LongDescription", @"Session Metadata will output additional acquisition and per-image information associated with an imaging session.  The files will be written to the folder containing your images (see options for overriding this). If Session Metadata is enabled, three types of metadata will be written:
 
 * Acquisition Details: Additional information associated with the session, including target, telescope, camera, and observing location.  This file will be written once for each new imaging folder.
-* Image Metadata: Additional information associated with each captured image, including exposure details, ADU statistics, HFR, detected stars, guiding RMS and more. An aggregate file will be updated for each image written to the folder.
+* Image Metadata: Additional information associated with each captured image, including exposure details, ADU statistics, HFR, detected stars, guiding RMS and more. Both FWHM and Eccentricity will be saved if you have the Hocus Focus plugin installed and working for Star Detection.  An aggregate file will be updated for each image written to the folder.
 * Weather Metrics: If enabled, weather metrics as reported by the connected observing conditions data source.
 
 There is certainly overlap between this plugin and other parts of NINA.  For example, NINA will write metadata to the FITS or XISF image headers - but it's not really convenient to access for a set of images.  You can also click save in the HFR History panel in the Imaging tab to save a CSV file of image metadata - but you have to remember to do it.  This plugin automates the metadata capture process and makes it easy to view and compare data.

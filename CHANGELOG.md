@@ -1,5 +1,8 @@
 # Session Metadata
 
+## 2.3.4.0 - 2022-10-XX
+* Added FWHM and eccentricity (calculated by Hocus Focus) to the output metrics.
+
 ## 2.3.0.0 - 2022-12-22
 * Migrated to .NET 7 for NINA 3
 
