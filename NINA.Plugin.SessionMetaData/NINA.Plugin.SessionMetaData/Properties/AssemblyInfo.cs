@@ -31,6 +31,8 @@ using System.Runtime.InteropServices;
 
 There is certainly overlap between this plugin and other parts of NINA.  For example, NINA will write metadata to the FITS or XISF image headers - but it's not really convenient to access for a set of images.  You can also click save in the HFR History panel in the Imaging tab to save a CSV file of image metadata - but you have to remember to do it.  This plugin automates the metadata capture process and makes it easy to view and compare data.
 
+If you like this plugin and it saves you time, please consider [Buying Me a Beer](https://www.buymeacoffee.com/tcpalmer).
+
 # Output Formats #
 Either or both output types can be enabled.
 * If CSV output is enabled, CSV files will be written: AcquisitionDetails.csv, ImageMetaData.csv (one row per image), and WeatherMetaData.csv (one row per image).
@@ -40,8 +42,8 @@ The output file names and location can be customized - see above.
 
 # Getting Help #
 * Ask for help (tag @tcpalmer) in the #plugin-discussions channel on the NINA project [Discord server](https://discord.com/invite/rWRbVbw).
-* [Source code](https://github.com/tcpalmer/nina.plugin.sessionmetadata)
-* [Change log](https://github.com/tcpalmer/nina.plugin.sessionmetadata/blob/main/CHANGELOG.md)
+* [Source code](https://github.com/tcpalmer/nina.plugin.sessionmetadata).
+* [Change log](https://github.com/tcpalmer/nina.plugin.sessionmetadata/blob/main/CHANGELOG.md).
 
 Session Metadata is provided 'as is' under the terms of the [Mozilla Public License 2.0](https://github.com/tcpalmer/nina.plugin.sessionmetadata/blob/main/LICENSE.txt)
 ")]
