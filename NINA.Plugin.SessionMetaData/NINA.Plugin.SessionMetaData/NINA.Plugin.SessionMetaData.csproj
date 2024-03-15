@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net7.0-windows</TargetFramework>
+    <TargetFramework>net8.0-windows7.0</TargetFramework>
     <OutputType>Library</OutputType>
     <RootNamespace>SessionMetaData.NINAPlugin</RootNamespace>
     <AssemblyName>SessionMetaData.NINAPlugin</AssemblyName>
@@ -17,7 +17,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Dirkster.AvalonDock" Version="4.60.0" />
-    <PackageReference Include="NINA.Plugin" Version="3.0.0.1001-nightly3" />
+    <PackageReference Include="NINA.Plugin" Version="3.0.0.3005-rc" />
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
     <PackageReference Include="System.Windows.Interactivity.WPF" Version="2.0.20525" />
     <PackageReference Include="WindowsAPICodePack-Core" Version="1.1.2" />
@@ -25,7 +25,7 @@
     <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.4.355802">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.Windows.Compatibility" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Windows.Compatibility" Version="8.0.2" />
   </ItemGroup>
   <PropertyGroup />
   <ItemGroup>

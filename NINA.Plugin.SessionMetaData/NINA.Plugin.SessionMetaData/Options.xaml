@@ -1,25 +1,22 @@
-﻿<ResourceDictionary
-    x:Class="SessionMetaData.NINAPlugin.Options"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+﻿<ResourceDictionary x:Class="SessionMetaData.NINAPlugin.Options"
+                    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <DataTemplate x:Key="Session Metadata_Options">
-        <StackPanel
-            Margin="0,10,0,0"
-            DataContext="{Binding}"
-            Orientation="Vertical">
-            <StackPanel Margin="0,0,0,5" Orientation="Horizontal">
-                <TextBlock
-                    Width="135"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Center">
+        <StackPanel Margin="0,10,0,0"
+                    DataContext="{Binding}"
+                    Orientation="Vertical">
+            <StackPanel Margin="0,0,0,5"
+                        Orientation="Horizontal">
+                <TextBlock Width="135"
+                           HorizontalAlignment="Right"
+                           VerticalAlignment="Center">
                     <TextBlock.Text>Plugin Enabled</TextBlock.Text>
                     <TextBlock.ToolTip>When the plugin is enabled, metadata will be written to image folders. Set to Off to completely disable.</TextBlock.ToolTip>
                 </TextBlock>
-                <CheckBox
-                    MinWidth="40"
-                    Margin="35,0,0,0"
-                    VerticalAlignment="Center"
-                    IsChecked="{Binding SessionMetaDataEnabled}" />
+                <CheckBox MinWidth="40"
+                          Margin="35,0,0,0"
+                          VerticalAlignment="Center"
+                          IsChecked="{Binding SessionMetaDataEnabled}" />
             </StackPanel>
             <StackPanel Margin="0,0,0,5"
                         Orientation="Horizontal">
@@ -34,47 +31,58 @@
                           VerticalAlignment="Center"
                           IsChecked="{Binding WeatherEnabled}" />
             </StackPanel>
-            <StackPanel Margin="0,0,0,5" Orientation="Horizontal">
-                <TextBlock
-                    Width="135"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Center">
+            <StackPanel Margin="0,0,0,5"
+                        Orientation="Horizontal">
+                <TextBlock Width="135"
+                           HorizontalAlignment="Right"
+                           VerticalAlignment="Center">
                     <TextBlock.Text>CSV Enabled</TextBlock.Text>
                     <TextBlock.ToolTip>Enable CSV format output files</TextBlock.ToolTip>
                 </TextBlock>
-                <CheckBox
-                    MinWidth="40"
-                    Margin="35,0,0,0"
-                    VerticalAlignment="Center"
-                    IsChecked="{Binding CSVEnabled}" />
+                <CheckBox MinWidth="40"
+                          Margin="35,0,0,0"
+                          VerticalAlignment="Center"
+                          IsChecked="{Binding CSVEnabled}" />
             </StackPanel>
-            <StackPanel Margin="0,0,0,5" Orientation="Horizontal">
-                <TextBlock
-                    Width="135"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Center">
+            <StackPanel Margin="0,0,0,5"
+                        Orientation="Horizontal">
+                <TextBlock Width="135"
+                           HorizontalAlignment="Right"
+                           VerticalAlignment="Center">
                     <TextBlock.Text>JSON Enabled</TextBlock.Text>
                     <TextBlock.ToolTip>Enable JSON format output files</TextBlock.ToolTip>
                 </TextBlock>
-                <CheckBox
-                    MinWidth="40"
-                    Margin="35,0,0,0"
-                    VerticalAlignment="Center"
-                    IsChecked="{Binding JSONEnabled}" />
+                <CheckBox MinWidth="40"
+                          Margin="35,0,0,0"
+                          VerticalAlignment="Center"
+                          IsChecked="{Binding JSONEnabled}" />
             </StackPanel>
-            <Separator
-                Width="20"
-                Height="8"
-                Background="Transparent" />
+            <StackPanel Margin="0,0,0,5"
+                        Orientation="Horizontal">
+                <TextBlock Width="135"
+                           HorizontalAlignment="Right"
+                           VerticalAlignment="Center">
+                    <TextBlock.Text>Non-Lights Enabled</TextBlock.Text>
+                    <TextBlock.ToolTip>Enable metadata output for flats, darks, and bias frames</TextBlock.ToolTip>
+                </TextBlock>
+                <CheckBox MinWidth="40"
+                          Margin="35,0,0,0"
+                          VerticalAlignment="Center"
+                          IsChecked="{Binding NonLightsEnabled}" />
+            </StackPanel>
+            <Separator Width="20"
+                       Height="8"
+                       Background="Transparent" />
             <GroupBox Margin="-10,0,0,0">
                 <GroupBox.Header>
-                    <TextBlock FontSize="16" Text="Custom File Names" />
+                    <TextBlock FontSize="16"
+                               Text="Custom File Names" />
                 </GroupBox.Header>
-                <StackPanel Margin="-10,0,0,0" Orientation="Vertical">
-                    <Separator
-                        Width="20"
-                        Height="5"
-                        Background="Transparent" />
+                <StackPanel Margin="-10,0,0,0"
+                            Orientation="Vertical">
+                    <Separator Width="20"
+                               Height="5"
+                               Background="Transparent" />
                     <TextBlock TextWrapping="Wrap">
                         The output file names can be customized by adding tokens that are replaced at runtime.  The
                         following tokens are supported: $$DATE$$, $$DATEMINUS12$$, $$DATETIME$$, $$TARGETNAME$$, and $$FILTER$$.  These will behave exactly
@@ -89,47 +97,43 @@
                         You can also prefix a file name with a relative directory path.  For example 'metadata\$$TARGETNAME$$\ImageMetaData will work as expected.
                         In this example a 'metadata' directory would be created under the Metadata Output Directory (see below).
                     </TextBlock>
-                    <Separator
-                        Width="20"
-                        Height="15"
-                        Background="Transparent" />
-                    <StackPanel Margin="0,0,0,5" Orientation="Horizontal">
-                        <TextBlock
-                            Width="200"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Center"
-                            Text="Acquisition Details File Name" />
-                        <TextBox
-                            MinWidth="140"
-                            Margin="5,0,0,0"
-                            VerticalAlignment="Center"
-                            Text="{Binding AcquisitionDetailsFileName}" />
+                    <Separator Width="20"
+                               Height="15"
+                               Background="Transparent" />
+                    <StackPanel Margin="0,0,0,5"
+                                Orientation="Horizontal">
+                        <TextBlock Width="200"
+                                   HorizontalAlignment="Right"
+                                   VerticalAlignment="Center"
+                                   Text="Acquisition Details File Name" />
+                        <TextBox MinWidth="140"
+                                 Margin="5,0,0,0"
+                                 VerticalAlignment="Center"
+                                 Text="{Binding AcquisitionDetailsFileName}" />
                     </StackPanel>
 
-                    <StackPanel Margin="0,0,0,5" Orientation="Horizontal">
-                        <TextBlock
-                            Width="200"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Center"
-                            Text="Image Metadata File Name" />
-                        <TextBox
-                            MinWidth="140"
-                            Margin="5,0,0,0"
-                            VerticalAlignment="Center"
-                            Text="{Binding ImageMetaDataFileName}" />
+                    <StackPanel Margin="0,0,0,5"
+                                Orientation="Horizontal">
+                        <TextBlock Width="200"
+                                   HorizontalAlignment="Right"
+                                   VerticalAlignment="Center"
+                                   Text="Image Metadata File Name" />
+                        <TextBox MinWidth="140"
+                                 Margin="5,0,0,0"
+                                 VerticalAlignment="Center"
+                                 Text="{Binding ImageMetaDataFileName}" />
                     </StackPanel>
 
-                    <StackPanel Margin="0,0,0,5" Orientation="Horizontal">
-                        <TextBlock
-                            Width="200"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Center"
-                            Text="Weather Metrics File Name" />
-                        <TextBox
-                            MinWidth="140"
-                            Margin="5,0,0,0"
-                            VerticalAlignment="Center"
-                            Text="{Binding WeatherMetaDataFileName}" />
+                    <StackPanel Margin="0,0,0,5"
+                                Orientation="Horizontal">
+                        <TextBlock Width="200"
+                                   HorizontalAlignment="Right"
+                                   VerticalAlignment="Center"
+                                   Text="Weather Metrics File Name" />
+                        <TextBox MinWidth="140"
+                                 Margin="5,0,0,0"
+                                 VerticalAlignment="Center"
+                                 Text="{Binding WeatherMetaDataFileName}" />
                     </StackPanel>
 
                     <Separator Width="20"
@@ -154,7 +158,8 @@
                                  Margin="5,0,0,0"
                                  VerticalAlignment="Center">
                             <TextBox.Text>
-                                <Binding Path="MetaDataOutputDirectory" UpdateSourceTrigger="LostFocus" />
+                                <Binding Path="MetaDataOutputDirectory"
+                                         UpdateSourceTrigger="LostFocus" />
                             </TextBox.Text>
                         </TextBox>
                         <Button Grid.Column="2"
@@ -170,7 +175,6 @@
                                   Stretch="Uniform" />
                         </Button>
                     </StackPanel>
-
                 </StackPanel>
             </GroupBox>
         </StackPanel>

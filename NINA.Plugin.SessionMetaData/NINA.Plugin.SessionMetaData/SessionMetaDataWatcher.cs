@@ -13,14 +13,15 @@ using System.IO;
 using System.Security.AccessControl;
 using System.Text.RegularExpressions;
 using System.Web;
+using static NINA.Equipment.Model.CaptureSequence;
 
 namespace SessionMetaData.NINAPlugin {
 
     public class SessionMetaDataWatcher {
-
         private bool SessionMetaDataEnabled;
         private bool CSVEnabled;
         private bool JSONEnabled;
+        private bool NonLightsEnabled;
         private bool WeatherEnabled;
         private string AcquisitionDetailsFileName;
         private string ImageMetaDataFileName;
@@ -32,6 +33,7 @@ namespace SessionMetaData.NINAPlugin {
             SessionMetaDataEnabled = Properties.Settings.Default.SessionMetaDataEnabled;
             CSVEnabled = Properties.Settings.Default.CSVEnabled;
             JSONEnabled = Properties.Settings.Default.JSONEnabled;
+            NonLightsEnabled = Properties.Settings.Default.NonLightsEnabled;
             WeatherEnabled = Properties.Settings.Default.WeatherEnabled;
             AcquisitionDetailsFileName = Properties.Settings.Default.AcquisitionDetailsFileName;
             ImageMetaDataFileName = Properties.Settings.Default.ImageMetaDataFileName;
@@ -43,14 +45,18 @@ namespace SessionMetaData.NINAPlugin {
         }
 
         private void ImageSaveMeditator_ImageSaved(object sender, ImageSavedEventArgs msg) {
-
             if (!SessionMetaDataEnabled) {
                 Logger.Debug("SessionMetaData not enabled");
                 return;
             }
 
-            if (msg.MetaData.Image.ImageType != "LIGHT") {
+            if (!NonLightsEnabled && msg.MetaData.Image.ImageType != ImageTypes.LIGHT) {
                 Logger.Debug("image is not a light, skipping");
+                return;
+            }
+
+            if (NonLightsEnabled && msg.MetaData.Image.ImageType == ImageTypes.SNAPSHOT) {
+                Logger.Debug("image is snapshot, skipping");
                 return;
             }
 
@@ -59,14 +65,12 @@ namespace SessionMetaData.NINAPlugin {
                 WriteAcquisitionMetaData(msg, outputDirectory);
                 WriteImageMetaData(msg, outputDirectory);
                 WriteWeatherMetaData(msg, outputDirectory);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 Logger.Warning($"session metadata save failed: {e.Message}");
             }
         }
 
         private void WriteAcquisitionMetaData(ImageSavedEventArgs msg, string outputDirectory) {
-
             AcquisitionMetaDataRecord Record = new AcquisitionMetaDataRecord(msg);
             string finalFileName = GetFinalOutputFileName(outputDirectory, AcquisitionDetailsFileName, msg);
             Logger.Debug($"AcquisitionDetails file name: {AcquisitionDetailsFileName} -> {finalFileName}");
@@ -108,7 +112,6 @@ namespace SessionMetaData.NINAPlugin {
         }
 
         private void WriteImageMetaData(ImageSavedEventArgs msg, string outputDirectory) {
-
             ImageMetaDataRecord Record = new ImageMetaDataRecord(msg, GetImageFilePath(msg.PathToImage));
             string finalFileName = GetFinalOutputFileName(outputDirectory, ImageMetaDataFileName, msg);
             Logger.Debug($"ImageMetaData file name: {ImageMetaDataFileName} -> {finalFileName}");
@@ -151,8 +154,7 @@ namespace SessionMetaData.NINAPlugin {
                     using (JsonWriter writer = new JsonTextWriter(sw)) {
                         serializer.Serialize(writer, Records);
                     }
-                }
-                else {
+                } else {
                     Records = new List<ImageMetaDataRecord>();
                     Records.Add(Record);
 
@@ -165,7 +167,6 @@ namespace SessionMetaData.NINAPlugin {
         }
 
         private void WriteWeatherMetaData(ImageSavedEventArgs msg, string outputDirectory) {
-
             if (!WeatherEnabled) {
                 return;
             }
@@ -217,8 +218,7 @@ namespace SessionMetaData.NINAPlugin {
                     using (JsonWriter writer = new JsonTextWriter(sw)) {
                         serializer.Serialize(writer, Records);
                     }
-                }
-                else {
+                } else {
                     Records = new List<WeatherMetaDataRecord>();
                     Records.Add(Record);
 
@@ -230,32 +230,44 @@ namespace SessionMetaData.NINAPlugin {
             }
         }
 
-        void SettingsChanged(object sender, PropertyChangedEventArgs e) {
+        private void SettingsChanged(object sender, PropertyChangedEventArgs e) {
             switch (e.PropertyName) {
                 case "SessionMetaDataEnabled":
                     SessionMetaDataEnabled = Properties.Settings.Default.SessionMetaDataEnabled;
                     break;
+
                 case "CSVEnabled":
                     CSVEnabled = Properties.Settings.Default.CSVEnabled;
                     break;
+
                 case "JSONEnabled":
                     JSONEnabled = Properties.Settings.Default.JSONEnabled;
                     break;
+
+                case "NonLightsEnabled":
+                    NonLightsEnabled = Properties.Settings.Default.NonLightsEnabled;
+                    break;
+
                 case "WeatherEnabled":
                     WeatherEnabled = Properties.Settings.Default.WeatherEnabled;
                     break;
+
                 case "AcquisitionDetailsFileName":
                     AcquisitionDetailsFileName = Properties.Settings.Default.AcquisitionDetailsFileName;
                     break;
+
                 case "ImageMetaDataFileName":
                     ImageMetaDataFileName = Properties.Settings.Default.ImageMetaDataFileName;
                     break;
+
                 case "AutoFocusRunsFileName":
                     AutoFocusRunsFileName = Properties.Settings.Default.AutoFocusRunsFileName;
                     break;
+
                 case "WeatherMetaDataFileName":
                     WeatherMetaDataFileName = Properties.Settings.Default.WeatherMetaDataFileName;
                     break;
+
                 case "MetaDataOutputDirectory":
                     MetaDataOutputDirectory = Properties.Settings.Default.MetaDataOutputDirectory;
                     break;
@@ -266,7 +278,7 @@ namespace SessionMetaData.NINAPlugin {
             public int ExposureNumber { get; set; }
             public string FilePath { get; set; }
             public string FilterName { get; set; }
-            public DateTime ExposureStart { get; set; }
+            public string ExposureStart { get; set; }
             public double Duration { get; set; }
             public string Binning { get; set; }
             public double CameraTemp { get; set; }
@@ -302,7 +314,7 @@ namespace SessionMetaData.NINAPlugin {
                 ExposureNumber = msg.MetaData.Image.ExposureNumber;
                 FilePath = ImageFilePath;
                 FilterName = msg.Filter;
-                ExposureStart = msg.MetaData.Image.ExposureStart;
+                ExposureStart = Utility.Utility.FormatDateTime(msg.MetaData.Image.ExposureStart);
                 Duration = Utility.Utility.ReformatDouble(msg.Duration);
                 Binning = msg.MetaData.Image.Binning?.ToString();
 
@@ -438,12 +450,10 @@ namespace SessionMetaData.NINAPlugin {
                     if (Regex.IsMatch(RAString, pattern)) {
                         Match match = Regex.Match(RAString, pattern);
                         return $"{Zeros(match.Groups[1].Value)}h {Zeros(match.Groups[2].Value)}m {Zeros(match.Groups[3].Value)}s";
-                    }
-                    else {
+                    } else {
                         return RAString;
                     }
-                }
-                catch (Exception) {
+                } catch (Exception) {
                     return "";
                 }
             }
@@ -467,7 +477,6 @@ namespace SessionMetaData.NINAPlugin {
         }
 
         private string GetOutputDirectory(ImageSavedEventArgs msg) {
-
             if (String.IsNullOrEmpty(MetaDataOutputDirectory)) {
                 Logger.Debug("MetaDataOutputDirectory is empty, defaulting to image save directory");
                 return GetImageDirectory(msg.PathToImage);
@@ -490,8 +499,7 @@ namespace SessionMetaData.NINAPlugin {
             try {
                 DirectorySecurity ds = new DirectoryInfo(path).GetAccessControl();
                 return true;
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 Logger.Trace($"exception checking access to directory ({MetaDataOutputDirectory}): {e.Message}");
                 return false;
             }
@@ -523,6 +531,5 @@ namespace SessionMetaData.NINAPlugin {
             // Combine all components into final path
             return Path.Combine(pathComponents.ToArray());
         }
-
     }
 }

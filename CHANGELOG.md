@@ -1,5 +1,9 @@
 # Session Metadata
 
+## 2.4.0.0 - 2024-03-15
+* Can now write metadata for flats, darks, and bias frames (off by default)
+* Output date format for exposure start times is now yyyy-MM-dd HH:mm
+
 ## 2.3.4.0 - 2023-10-27
 * Added FWHM and eccentricity (calculated by Hocus Focus) to the output metrics.
 
