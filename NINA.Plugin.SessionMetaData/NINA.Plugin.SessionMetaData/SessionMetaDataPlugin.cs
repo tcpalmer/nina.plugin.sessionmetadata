@@ -8,7 +8,6 @@ using NINA.WPF.Base.Interfaces.ViewModel;
 using SessionMetaData.NINAPlugin.Properties;
 using System.ComponentModel;
 using System.ComponentModel.Composition;
-using System.IO;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 
@@ -16,12 +15,10 @@ namespace SessionMetaData.NINAPlugin {
 
     [Export(typeof(IPluginManifest))]
     public class SessionMetaDataPlugin : PluginBase, INotifyPropertyChanged {
-
         public ICommand MetadataOutputDirectoryDialogCommand { get; private set; }
 
         [ImportingConstructor]
         public SessionMetaDataPlugin(IProfileService profileService, IImageSaveMediator imageSaveMediator, IImageHistoryVM imageHistory) {
-
             MetadataOutputDirectoryDialogCommand = new RelayCommand(OpenMetadataOutputDirectoryDialog);
 
             if (Settings.Default.UpdateSettings) {
@@ -59,6 +56,15 @@ namespace SessionMetaData.NINAPlugin {
             get => Settings.Default.JSONEnabled;
             set {
                 Settings.Default.JSONEnabled = value;
+                Settings.Default.Save();
+                RaisePropertyChanged();
+            }
+        }
+
+        public bool NonLightsEnabled {
+            get => Settings.Default.NonLightsEnabled;
+            set {
+                Settings.Default.NonLightsEnabled = value;
                 Settings.Default.Save();
                 RaisePropertyChanged();
             }
@@ -110,12 +116,12 @@ namespace SessionMetaData.NINAPlugin {
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
+
         protected void RaisePropertyChanged([CallerMemberName] string propertyName = null) {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         private void OpenMetadataOutputDirectoryDialog(object obj) {
-
             CommonOpenFileDialog dialog = new CommonOpenFileDialog();
             dialog.Title = "Metadata Output Directory";
             dialog.IsFolderPicker = true;

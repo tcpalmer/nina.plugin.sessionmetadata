@@ -39,6 +39,15 @@ namespace SessionMetaData.NINAPlugin.Utility {
         }
 
         /// <summary>
+        /// Format a date/time to yyyy-MM-dd HH:mm
+        /// </summary>
+        /// <param name="dateTime"></param>
+        /// <returns></returns>
+        public static string FormatDateTime(DateTime dateTime) {
+            return dateTime.ToLocalTime().ToString("yyyy-MM-dd HH\\:mm");
+        }
+
+        /// <summary>
         /// Format a double, convert back to double
         /// </summary>
         /// <param name="value"></param>
