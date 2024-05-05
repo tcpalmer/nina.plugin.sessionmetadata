@@ -377,7 +377,7 @@ namespace SessionMetaData.NINAPlugin {
 
         private class WeatherMetaDataRecord {
             public int ExposureNumber { get; set; }
-            public DateTime ExposureStart { get; set; }
+            public string ExposureStart { get; set; }
             public double Temperature { get; set; }
             public double DewPoint { get; set; }
             public double Humidity { get; set; }
@@ -395,7 +395,7 @@ namespace SessionMetaData.NINAPlugin {
 
             public WeatherMetaDataRecord(ImageSavedEventArgs msg) {
                 ExposureNumber = msg.MetaData.Image.ExposureNumber;
-                ExposureStart = msg.MetaData.Image.ExposureStart;
+                ExposureStart = Utility.Utility.FormatDateTime(msg.MetaData.Image.ExposureStart);
                 WeatherDataParameter weatherData = msg.MetaData.WeatherData;
                 Temperature = SafeRound(weatherData.Temperature, 1);
                 DewPoint = SafeRound(weatherData.DewPoint, 1);
