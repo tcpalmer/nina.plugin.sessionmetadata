@@ -57,6 +57,12 @@ namespace SessionMetaData.NINAPlugin.Test {
         }
 
         [Test]
+        public void TestFormatDateTimeISO8601() {
+            Utility.Utility.FormatDateTimeISO8601(new DateTime(2024, 1, 2, 3, 4, 5)).Should().Be("2024-01-02T08:04:05.0000000Z");
+            Utility.Utility.FormatDateTimeISO8601(new DateTime(2024, 12, 31, 17, 18, 19)).Should().Be("2024-12-31T22:18:19.0000000Z");
+        }
+
+        [Test]
         public void TestReformatDouble() {
             Utility.Utility.ReformatDouble(1.2345678).Should().Be(1.2346);
             Utility.Utility.ReformatDouble(1.23).Should().Be(1.23);

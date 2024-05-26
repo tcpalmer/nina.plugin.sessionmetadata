@@ -306,6 +306,9 @@ namespace SessionMetaData.NINAPlugin {
             public double RotatorPosition { get; set; }
             public string PierSide { get; set; }
             public double Airmass { get; set; }
+            public string ExposureStartUTC { get; set; }
+            public double MountRA { get; set; }
+            public double MountDec { get; set; }
 
             public ImageMetaDataRecord() {
             }
@@ -315,6 +318,7 @@ namespace SessionMetaData.NINAPlugin {
                 FilePath = ImageFilePath;
                 FilterName = msg.Filter;
                 ExposureStart = Utility.Utility.FormatDateTime(msg.MetaData.Image.ExposureStart);
+                ExposureStartUTC = Utility.Utility.FormatDateTimeISO8601(msg.MetaData.Image.ExposureStart);
                 Duration = Utility.Utility.ReformatDouble(msg.Duration);
                 Binning = msg.MetaData.Image.Binning?.ToString();
 
@@ -350,6 +354,9 @@ namespace SessionMetaData.NINAPlugin {
                 PierSide = GetPierSide(msg.MetaData.Telescope.SideOfPier);
 
                 Airmass = Utility.Utility.ReformatDouble(msg.MetaData.Telescope.Airmass);
+
+                MountRA = msg.MetaData.Telescope.Coordinates.RADegrees;
+                MountDec = msg.MetaData.Telescope.Coordinates.Dec;
             }
 
             private double GetHocusFocusMetric(IStarDetectionAnalysis starDetectionAnalysis, string propertyName) {
@@ -389,6 +396,7 @@ namespace SessionMetaData.NINAPlugin {
             public double SkyTemperature { get; set; }
             public double SkyBrightness { get; set; }
             public double SkyQuality { get; set; }
+            public string ExposureStartUTC { get; set; }
 
             public WeatherMetaDataRecord() {
             }
@@ -396,6 +404,7 @@ namespace SessionMetaData.NINAPlugin {
             public WeatherMetaDataRecord(ImageSavedEventArgs msg) {
                 ExposureNumber = msg.MetaData.Image.ExposureNumber;
                 ExposureStart = Utility.Utility.FormatDateTime(msg.MetaData.Image.ExposureStart);
+                ExposureStartUTC = Utility.Utility.FormatDateTimeISO8601(msg.MetaData.Image.ExposureStart);
                 WeatherDataParameter weatherData = msg.MetaData.WeatherData;
                 Temperature = SafeRound(weatherData.Temperature, 1);
                 DewPoint = SafeRound(weatherData.DewPoint, 1);

@@ -1,5 +1,9 @@
 # Session Metadata
 
+## 2.5.1.0 - 2024-05-26
+* Added exposure start in UTC using ISO 8601 format to image metadata
+* Added mount RA and Dec position to image metadata
+
 ## 2.4.1.0 - 2024-05-05
 * Changed date format of weather exposure start to match main image metadata
 
