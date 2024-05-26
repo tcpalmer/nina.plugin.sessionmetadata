@@ -48,6 +48,15 @@ namespace SessionMetaData.NINAPlugin.Utility {
         }
 
         /// <summary>
+        /// Convert a date/time to UTC and output in ISO 8601 format
+        /// </summary>
+        /// <param name="dateTime"></param>
+        /// <returns></returns>
+        public static string FormatDateTimeISO8601(DateTime dateTime) {
+            return dateTime.ToUniversalTime().ToString("O");
+        }
+
+        /// <summary>
         /// Format a double, convert back to double
         /// </summary>
         /// <param name="value"></param>
