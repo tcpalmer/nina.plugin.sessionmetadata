@@ -8,7 +8,6 @@ using NINA.Image.Interfaces;
 using NINA.WPF.Base.Interfaces.Mediator;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.Security.AccessControl;
 using System.Text.RegularExpressions;
@@ -18,44 +17,25 @@ using static NINA.Equipment.Model.CaptureSequence;
 namespace SessionMetaData.NINAPlugin {
 
     public class SessionMetaDataWatcher {
-        private bool SessionMetaDataEnabled;
-        private bool CSVEnabled;
-        private bool JSONEnabled;
-        private bool NonLightsEnabled;
-        private bool WeatherEnabled;
-        private string AcquisitionDetailsFileName;
-        private string ImageMetaDataFileName;
-        private string WeatherMetaDataFileName;
-        private string MetaDataOutputDirectory;
-        private string AutoFocusRunsFileName;
+        private SessionMetaDataPlugin plugin;
 
-        public SessionMetaDataWatcher(IImageSaveMediator imageSaveMediator) {
-            SessionMetaDataEnabled = Properties.Settings.Default.SessionMetaDataEnabled;
-            CSVEnabled = Properties.Settings.Default.CSVEnabled;
-            JSONEnabled = Properties.Settings.Default.JSONEnabled;
-            NonLightsEnabled = Properties.Settings.Default.NonLightsEnabled;
-            WeatherEnabled = Properties.Settings.Default.WeatherEnabled;
-            AcquisitionDetailsFileName = Properties.Settings.Default.AcquisitionDetailsFileName;
-            ImageMetaDataFileName = Properties.Settings.Default.ImageMetaDataFileName;
-            WeatherMetaDataFileName = Properties.Settings.Default.WeatherMetaDataFileName;
-            MetaDataOutputDirectory = Properties.Settings.Default.MetaDataOutputDirectory;
-
-            Properties.Settings.Default.PropertyChanged += SettingsChanged;
+        public SessionMetaDataWatcher(IImageSaveMediator imageSaveMediator, SessionMetaDataPlugin plugin) {
+            this.plugin = plugin;
             imageSaveMediator.ImageSaved += ImageSaveMeditator_ImageSaved;
         }
 
         private void ImageSaveMeditator_ImageSaved(object sender, ImageSavedEventArgs msg) {
-            if (!SessionMetaDataEnabled) {
+            if (!plugin.SessionMetaDataEnabled) {
                 Logger.Debug("SessionMetaData not enabled");
                 return;
             }
 
-            if (!NonLightsEnabled && msg.MetaData.Image.ImageType != ImageTypes.LIGHT) {
+            if (!plugin.NonLightsEnabled && msg.MetaData.Image.ImageType != ImageTypes.LIGHT) {
                 Logger.Debug("image is not a light, skipping");
                 return;
             }
 
-            if (NonLightsEnabled && msg.MetaData.Image.ImageType == ImageTypes.SNAPSHOT) {
+            if (plugin.NonLightsEnabled && msg.MetaData.Image.ImageType == ImageTypes.SNAPSHOT) {
                 Logger.Debug("image is snapshot, skipping");
                 return;
             }
@@ -72,10 +52,10 @@ namespace SessionMetaData.NINAPlugin {
 
         private void WriteAcquisitionMetaData(ImageSavedEventArgs msg, string outputDirectory) {
             AcquisitionMetaDataRecord Record = new AcquisitionMetaDataRecord(msg);
-            string finalFileName = GetFinalOutputFileName(outputDirectory, AcquisitionDetailsFileName, msg);
-            Logger.Debug($"AcquisitionDetails file name: {AcquisitionDetailsFileName} -> {finalFileName}");
+            string finalFileName = GetFinalOutputFileName(outputDirectory, plugin.AcquisitionDetailsFileName, msg);
+            Logger.Debug($"AcquisitionDetails file name: {plugin.AcquisitionDetailsFileName} -> {finalFileName}");
 
-            if (CSVEnabled) {
+            if (plugin.CSVEnabled) {
                 string AcquisitionFileName = $"{finalFileName}.csv";
 
                 // Only write this once per image output directory
@@ -92,7 +72,7 @@ namespace SessionMetaData.NINAPlugin {
                 }
             }
 
-            if (JSONEnabled) {
+            if (plugin.JSONEnabled) {
                 string AcquisitionFileName = $"{finalFileName}.json";
 
                 // Only write this once per image output directory
@@ -113,10 +93,10 @@ namespace SessionMetaData.NINAPlugin {
 
         private void WriteImageMetaData(ImageSavedEventArgs msg, string outputDirectory) {
             ImageMetaDataRecord Record = new ImageMetaDataRecord(msg, GetImageFilePath(msg.PathToImage));
-            string finalFileName = GetFinalOutputFileName(outputDirectory, ImageMetaDataFileName, msg);
-            Logger.Debug($"ImageMetaData file name: {ImageMetaDataFileName} -> {finalFileName}");
+            string finalFileName = GetFinalOutputFileName(outputDirectory, plugin.ImageMetaDataFileName, msg);
+            Logger.Debug($"ImageMetaData file name: {plugin.ImageMetaDataFileName} -> {finalFileName}");
 
-            if (CSVEnabled) {
+            if (plugin.CSVEnabled) {
                 string ImageMetaDataFileName = $"{finalFileName}.csv";
                 Logger.Info($"Writing CSV image metadata: {ImageMetaDataFileName}");
 
@@ -133,7 +113,7 @@ namespace SessionMetaData.NINAPlugin {
                 }
             }
 
-            if (JSONEnabled) {
+            if (plugin.JSONEnabled) {
                 string ImageMetaDataFileName = $"{finalFileName}.json";
                 Logger.Info($"Writing JSON image metadata: {ImageMetaDataFileName}");
 
@@ -167,7 +147,7 @@ namespace SessionMetaData.NINAPlugin {
         }
 
         private void WriteWeatherMetaData(ImageSavedEventArgs msg, string outputDirectory) {
-            if (!WeatherEnabled) {
+            if (!plugin.WeatherEnabled) {
                 return;
             }
 
@@ -177,10 +157,10 @@ namespace SessionMetaData.NINAPlugin {
             }
 
             WeatherMetaDataRecord Record = new WeatherMetaDataRecord(msg);
-            string finalFileName = GetFinalOutputFileName(outputDirectory, WeatherMetaDataFileName, msg);
-            Logger.Debug($"WeatherMetaData file name: {WeatherMetaDataFileName} -> {finalFileName}");
+            string finalFileName = GetFinalOutputFileName(outputDirectory, plugin.WeatherMetaDataFileName, msg);
+            Logger.Debug($"WeatherMetaData file name: {plugin.WeatherMetaDataFileName} -> {finalFileName}");
 
-            if (CSVEnabled) {
+            if (plugin.CSVEnabled) {
                 string WeatherMetaDataFileName = $"{finalFileName}.csv";
                 Logger.Info($"Writing CSV weather metadata: {WeatherMetaDataFileName}");
 
@@ -197,7 +177,7 @@ namespace SessionMetaData.NINAPlugin {
                 }
             }
 
-            if (JSONEnabled) {
+            if (plugin.JSONEnabled) {
                 string WeatherMetaDataFileName = $"{finalFileName}.json";
                 Logger.Info($"Writing JSON weather metadata: {WeatherMetaDataFileName}");
 
@@ -227,50 +207,6 @@ namespace SessionMetaData.NINAPlugin {
                         serializer.Serialize(writer, Records);
                     }
                 }
-            }
-        }
-
-        private void SettingsChanged(object sender, PropertyChangedEventArgs e) {
-            switch (e.PropertyName) {
-                case "SessionMetaDataEnabled":
-                    SessionMetaDataEnabled = Properties.Settings.Default.SessionMetaDataEnabled;
-                    break;
-
-                case "CSVEnabled":
-                    CSVEnabled = Properties.Settings.Default.CSVEnabled;
-                    break;
-
-                case "JSONEnabled":
-                    JSONEnabled = Properties.Settings.Default.JSONEnabled;
-                    break;
-
-                case "NonLightsEnabled":
-                    NonLightsEnabled = Properties.Settings.Default.NonLightsEnabled;
-                    break;
-
-                case "WeatherEnabled":
-                    WeatherEnabled = Properties.Settings.Default.WeatherEnabled;
-                    break;
-
-                case "AcquisitionDetailsFileName":
-                    AcquisitionDetailsFileName = Properties.Settings.Default.AcquisitionDetailsFileName;
-                    break;
-
-                case "ImageMetaDataFileName":
-                    ImageMetaDataFileName = Properties.Settings.Default.ImageMetaDataFileName;
-                    break;
-
-                case "AutoFocusRunsFileName":
-                    AutoFocusRunsFileName = Properties.Settings.Default.AutoFocusRunsFileName;
-                    break;
-
-                case "WeatherMetaDataFileName":
-                    WeatherMetaDataFileName = Properties.Settings.Default.WeatherMetaDataFileName;
-                    break;
-
-                case "MetaDataOutputDirectory":
-                    MetaDataOutputDirectory = Properties.Settings.Default.MetaDataOutputDirectory;
-                    break;
             }
         }
 
@@ -486,22 +422,22 @@ namespace SessionMetaData.NINAPlugin {
         }
 
         private string GetOutputDirectory(ImageSavedEventArgs msg) {
-            if (String.IsNullOrEmpty(MetaDataOutputDirectory)) {
+            if (String.IsNullOrEmpty(plugin.MetaDataOutputDirectory)) {
                 Logger.Debug("MetaDataOutputDirectory is empty, defaulting to image save directory");
                 return GetImageDirectory(msg.PathToImage);
             }
 
-            if (!Directory.Exists(MetaDataOutputDirectory)) {
-                Logger.Warning($"MetaDataOutputDirectory does not exist ({MetaDataOutputDirectory}), defaulting to image save directory");
+            if (!Directory.Exists(plugin.MetaDataOutputDirectory)) {
+                Logger.Warning($"MetaDataOutputDirectory does not exist ({plugin.MetaDataOutputDirectory}), defaulting to image save directory");
                 return GetImageDirectory(msg.PathToImage);
             }
 
-            if (!IsDirectoryWriteable(MetaDataOutputDirectory)) {
-                Logger.Warning($"MetaDataOutputDirectory is not writable ({MetaDataOutputDirectory}), defaulting to image save directory");
+            if (!IsDirectoryWriteable(plugin.MetaDataOutputDirectory)) {
+                Logger.Warning($"MetaDataOutputDirectory is not writable ({plugin.MetaDataOutputDirectory}), defaulting to image save directory");
                 return GetImageDirectory(msg.PathToImage);
             }
 
-            return MetaDataOutputDirectory;
+            return plugin.MetaDataOutputDirectory;
         }
 
         private bool IsDirectoryWriteable(string path) {
@@ -509,7 +445,7 @@ namespace SessionMetaData.NINAPlugin {
                 DirectorySecurity ds = new DirectoryInfo(path).GetAccessControl();
                 return true;
             } catch (Exception e) {
-                Logger.Trace($"exception checking access to directory ({MetaDataOutputDirectory}): {e.Message}");
+                Logger.Trace($"exception checking access to directory ({plugin.MetaDataOutputDirectory}): {e.Message}");
                 return false;
             }
         }

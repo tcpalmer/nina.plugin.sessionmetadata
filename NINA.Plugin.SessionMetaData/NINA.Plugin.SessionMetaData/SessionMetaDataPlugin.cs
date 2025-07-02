@@ -2,115 +2,121 @@
 using NINA.Core.Utility;
 using NINA.Plugin;
 using NINA.Plugin.Interfaces;
+using NINA.Profile;
 using NINA.Profile.Interfaces;
 using NINA.WPF.Base.Interfaces.Mediator;
 using NINA.WPF.Base.Interfaces.ViewModel;
-using SessionMetaData.NINAPlugin.Properties;
+using System;
 using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
+using RelayCommand = CommunityToolkit.Mvvm.Input.RelayCommand;
 
 namespace SessionMetaData.NINAPlugin {
 
     [Export(typeof(IPluginManifest))]
     public class SessionMetaDataPlugin : PluginBase, INotifyPropertyChanged {
         public ICommand MetadataOutputDirectoryDialogCommand { get; private set; }
+        private IPluginOptionsAccessor pluginSettings;
 
         [ImportingConstructor]
         public SessionMetaDataPlugin(IProfileService profileService, IImageSaveMediator imageSaveMediator, IImageHistoryVM imageHistory) {
             MetadataOutputDirectoryDialogCommand = new RelayCommand(OpenMetadataOutputDirectoryDialog);
 
-            if (Settings.Default.UpdateSettings) {
-                Settings.Default.Upgrade();
-                Settings.Default.UpdateSettings = false;
-                CoreUtil.SaveSettings(Settings.Default);
+            if (Properties.Settings.Default.UpdateSettings) {
+                Properties.Settings.Default.Upgrade();
+                Properties.Settings.Default.UpdateSettings = false;
+                CoreUtil.SaveSettings(Properties.Settings.Default);
             }
 
-            new SessionMetaDataWatcher(imageSaveMediator);
+            pluginSettings = new PluginOptionsAccessor(profileService, Guid.Parse(this.Identifier));
+            MigrateSettings();
+            profileService.ProfileChanged += ProfileService_ProfileChanged;
+
+            new SessionMetaDataWatcher(imageSaveMediator, this);
 
             // Putting this on hold, hopefully plugins will get more access via:
             // https://bitbucket.org/Isbeorn/nina/issues/1005/request-to-provide-plugin-access-to
-            // new SessionAutoFocusWatcher(profileService, imageHistory);
+            // new SessionAutoFocusWatcher(profileService, this, imageHistory);
         }
 
         public bool SessionMetaDataEnabled {
-            get => Settings.Default.SessionMetaDataEnabled;
+            get => pluginSettings.GetValueBoolean(nameof(SessionMetaDataEnabled), Properties.Settings.Default.SessionMetaDataEnabled);
             set {
-                Settings.Default.SessionMetaDataEnabled = value;
-                Settings.Default.Save();
+                pluginSettings.SetValueBoolean(nameof(SessionMetaDataEnabled), value);
                 RaisePropertyChanged();
             }
         }
 
         public bool CSVEnabled {
-            get => Settings.Default.CSVEnabled;
+            get => pluginSettings.GetValueBoolean(nameof(CSVEnabled), Properties.Settings.Default.CSVEnabled);
             set {
-                Settings.Default.CSVEnabled = value;
-                Settings.Default.Save();
+                pluginSettings.SetValueBoolean(nameof(CSVEnabled), value);
                 RaisePropertyChanged();
             }
         }
 
         public bool JSONEnabled {
-            get => Settings.Default.JSONEnabled;
+            get => pluginSettings.GetValueBoolean(nameof(JSONEnabled), Properties.Settings.Default.JSONEnabled);
             set {
-                Settings.Default.JSONEnabled = value;
-                Settings.Default.Save();
+                pluginSettings.SetValueBoolean(nameof(JSONEnabled), value);
                 RaisePropertyChanged();
             }
         }
 
         public bool NonLightsEnabled {
-            get => Settings.Default.NonLightsEnabled;
+            get => pluginSettings.GetValueBoolean(nameof(NonLightsEnabled), Properties.Settings.Default.NonLightsEnabled);
             set {
-                Settings.Default.NonLightsEnabled = value;
-                Settings.Default.Save();
+                pluginSettings.SetValueBoolean(nameof(NonLightsEnabled), value);
                 RaisePropertyChanged();
             }
         }
 
         public bool WeatherEnabled {
-            get => Settings.Default.WeatherEnabled;
+            get => pluginSettings.GetValueBoolean(nameof(WeatherEnabled), Properties.Settings.Default.WeatherEnabled);
             set {
-                Settings.Default.WeatherEnabled = value;
-                Settings.Default.Save();
+                pluginSettings.SetValueBoolean(nameof(WeatherEnabled), value);
                 RaisePropertyChanged();
             }
         }
 
         public string AcquisitionDetailsFileName {
-            get => Settings.Default.AcquisitionDetailsFileName;
+            get => pluginSettings.GetValueString(nameof(AcquisitionDetailsFileName), Properties.Settings.Default.AcquisitionDetailsFileName);
             set {
-                Settings.Default.AcquisitionDetailsFileName = value;
-                Settings.Default.Save();
+                pluginSettings.SetValueString(nameof(AcquisitionDetailsFileName), value);
                 RaisePropertyChanged();
             }
         }
 
         public string ImageMetaDataFileName {
-            get => Settings.Default.ImageMetaDataFileName;
+            get => pluginSettings.GetValueString(nameof(ImageMetaDataFileName), Properties.Settings.Default.ImageMetaDataFileName);
             set {
-                Settings.Default.ImageMetaDataFileName = value;
-                Settings.Default.Save();
+                pluginSettings.SetValueString(nameof(ImageMetaDataFileName), value);
                 RaisePropertyChanged();
             }
         }
 
         public string WeatherMetaDataFileName {
-            get => Settings.Default.WeatherMetaDataFileName;
+            get => pluginSettings.GetValueString(nameof(WeatherMetaDataFileName), Properties.Settings.Default.WeatherMetaDataFileName);
             set {
-                Settings.Default.WeatherMetaDataFileName = value;
-                Settings.Default.Save();
+                pluginSettings.SetValueString(nameof(WeatherMetaDataFileName), value);
+                RaisePropertyChanged();
+            }
+        }
+
+        public string AutoFocusRunsFileName {
+            get => pluginSettings.GetValueString(nameof(AutoFocusRunsFileName), Properties.Settings.Default.AutoFocusRunsFileName);
+            set {
+                pluginSettings.SetValueString(nameof(AutoFocusRunsFileName), value);
                 RaisePropertyChanged();
             }
         }
 
         public string MetaDataOutputDirectory {
-            get => Settings.Default.MetaDataOutputDirectory;
+            get => pluginSettings.GetValueString(nameof(MetaDataOutputDirectory), Properties.Settings.Default.MetaDataOutputDirectory);
             set {
-                Settings.Default.MetaDataOutputDirectory = value;
-                Settings.Default.Save();
+                pluginSettings.SetValueString(nameof(MetaDataOutputDirectory), value);
                 RaisePropertyChanged();
             }
         }
@@ -121,7 +127,38 @@ namespace SessionMetaData.NINAPlugin {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        private void OpenMetadataOutputDirectoryDialog(object obj) {
+        private void ProfileService_ProfileChanged(object sender, EventArgs e) {
+            MigrateSettings();
+            RaisePropertyChanged(nameof(SessionMetaDataEnabled));
+            RaisePropertyChanged(nameof(CSVEnabled));
+            RaisePropertyChanged(nameof(JSONEnabled));
+            RaisePropertyChanged(nameof(NonLightsEnabled));
+            RaisePropertyChanged(nameof(WeatherEnabled));
+            RaisePropertyChanged(nameof(AcquisitionDetailsFileName));
+            RaisePropertyChanged(nameof(ImageMetaDataFileName));
+            RaisePropertyChanged(nameof(WeatherMetaDataFileName));
+            RaisePropertyChanged(nameof(MetaDataOutputDirectory));
+        }
+
+        private void MigrateSettings() {
+            bool hasMigratedProperties = pluginSettings.GetValueBoolean("HasMigratedProperties", false);
+            if (hasMigratedProperties) { return; }
+
+            Logger.Debug("performing onetime migration of Session Metadata plugin configuration for this profile");
+            pluginSettings.SetValueBoolean(nameof(SessionMetaDataEnabled), Properties.Settings.Default.SessionMetaDataEnabled);
+            pluginSettings.SetValueBoolean(nameof(CSVEnabled), Properties.Settings.Default.CSVEnabled);
+            pluginSettings.SetValueBoolean(nameof(JSONEnabled), Properties.Settings.Default.JSONEnabled);
+            pluginSettings.SetValueBoolean(nameof(NonLightsEnabled), Properties.Settings.Default.NonLightsEnabled);
+            pluginSettings.SetValueBoolean(nameof(WeatherEnabled), Properties.Settings.Default.WeatherEnabled);
+            pluginSettings.SetValueString(nameof(AcquisitionDetailsFileName), Properties.Settings.Default.AcquisitionDetailsFileName);
+            pluginSettings.SetValueString(nameof(ImageMetaDataFileName), Properties.Settings.Default.ImageMetaDataFileName);
+            pluginSettings.SetValueString(nameof(WeatherMetaDataFileName), Properties.Settings.Default.WeatherMetaDataFileName);
+            pluginSettings.SetValueString(nameof(MetaDataOutputDirectory), Properties.Settings.Default.MetaDataOutputDirectory);
+
+            pluginSettings.SetValueBoolean("HasMigratedProperties", true);
+        }
+
+        private void OpenMetadataOutputDirectoryDialog() {
             CommonOpenFileDialog dialog = new CommonOpenFileDialog();
             dialog.Title = "Metadata Output Directory";
             dialog.IsFolderPicker = true;

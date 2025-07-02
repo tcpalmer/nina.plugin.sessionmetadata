@@ -1,5 +1,8 @@
 # Session Metadata
 
+## 2.6.0.0 - 2025-07-02
+* Migrated plugin configuration variables so they're stored separately for each NINA profile.
+
 ## 2.5.1.0 - 2024-05-26
 * Added exposure start in UTC using ISO 8601 format to image metadata
 * Added mount RA and Dec position to image metadata
