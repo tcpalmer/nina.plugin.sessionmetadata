@@ -46,7 +46,7 @@ namespace SessionMetaData.NINAPlugin {
                 WriteImageMetaData(msg, outputDirectory);
                 WriteWeatherMetaData(msg, outputDirectory);
             } catch (Exception e) {
-                Logger.Warning($"session metadata save failed: {e.Message}");
+                Logger.Warning($"session metadata save failed: {e.Message}\n{e.StackTrace}");
             }
         }
 
@@ -58,7 +58,7 @@ namespace SessionMetaData.NINAPlugin {
             if (plugin.CSVEnabled) {
                 string AcquisitionFileName = $"{finalFileName}.csv";
 
-                // Only write this once per image output directory
+                // Only write this once per output directory
                 if (!File.Exists(AcquisitionFileName)) {
                     Logger.Info($"Writing CSV acquisition summary: {AcquisitionFileName}");
 
@@ -69,13 +69,15 @@ namespace SessionMetaData.NINAPlugin {
                         csv.WriteRecord(Record);
                         csv.NextRecord();
                     }
+                } else {
+                    Logger.Warning($"acquisition file already exists, will not overwrite: {AcquisitionFileName}");
                 }
             }
 
             if (plugin.JSONEnabled) {
                 string AcquisitionFileName = $"{finalFileName}.json";
 
-                // Only write this once per image output directory
+                // Only write this once per output directory
                 if (!File.Exists(AcquisitionFileName)) {
                     Logger.Info($"Writing JSON acquisition summary: {AcquisitionFileName}");
 
@@ -87,6 +89,8 @@ namespace SessionMetaData.NINAPlugin {
                     using (JsonWriter writer = new JsonTextWriter(sw)) {
                         serializer.Serialize(writer, Record);
                     }
+                } else {
+                    Logger.Warning($"acquisition file already exists, will not overwrite: {AcquisitionFileName}");
                 }
             }
         }
@@ -291,8 +295,13 @@ namespace SessionMetaData.NINAPlugin {
 
                 Airmass = Utility.Utility.ReformatDouble(msg.MetaData.Telescope.Airmass);
 
-                MountRA = msg.MetaData.Telescope.Coordinates.RADegrees;
-                MountDec = msg.MetaData.Telescope.Coordinates.Dec;
+                if (msg.MetaData.Telescope.Coordinates != null) {
+                    MountRA = msg.MetaData.Telescope.Coordinates.RADegrees;
+                    MountDec = msg.MetaData.Telescope.Coordinates.Dec;
+                } else {
+                    MountRA = 0;
+                    MountDec = 0;
+                }
             }
 
             private double GetHocusFocusMetric(IStarDetectionAnalysis starDetectionAnalysis, string propertyName) {

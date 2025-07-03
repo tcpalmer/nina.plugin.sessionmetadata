@@ -1,5 +1,8 @@
 # Session Metadata
 
+## 2.6.1.0 - 2025-07-03
+* Fixed problem when mount isn't connected.
+
 ## 2.6.0.0 - 2025-07-02
 * Migrated plugin configuration variables so they're stored separately for each NINA profile.
 
