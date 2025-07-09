@@ -85,7 +85,7 @@
                                Background="Transparent" />
                     <TextBlock TextWrapping="Wrap">
                         The output file names can be customized by adding tokens that are replaced at runtime.  The
-                        following tokens are supported: $$DATE$$, $$DATEMINUS12$$, $$DATETIME$$, $$TARGETNAME$$, and $$FILTER$$.  These will behave exactly
+                        following tokens are supported: $$DATE$$, $$DATEUTC$$, $$DATEMINUS12$$, $$DATETIME$$, $$TIME$$, $$TIMEUTC$$, $$TARGETNAME$$, and $$FILTER$$.  These will behave exactly
                         like they do when used in an image file pattern (Options &gt; Imaging) with the following exceptions: any spaces (for
                         example in a target name) are replaced with '_' and any invalid path characters are stripped.  If you use $$DATEMINUS12$$
                         in your image file pattern to create folders by date, it's recommended you use it here too instead of $$DATE$$.

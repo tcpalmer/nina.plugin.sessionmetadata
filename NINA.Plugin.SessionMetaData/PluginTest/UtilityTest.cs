@@ -26,7 +26,7 @@ namespace SessionMetaData.NINAPlugin.Test {
             result.Should().Be("foo-2021-06-01-bar");
 
             result = Utility.Utility.FileNameTokenSubstitution("foo-$$DATETIME$$-bar", GenImageMetaData(new DateTime(2021, 6, 1, 12, 32, 30), "My Target Name"));
-            result.Should().Be("foo-2021-06-01_12-32-30-bar");
+            result.Should().Be("foo-2021-06-01_08-32-30-bar");
 
             result = Utility.Utility.FileNameTokenSubstitution("foo-$$DATEMINUS12$$-bar", GenImageMetaData(new DateTime(2021, 6, 1, 9, 32, 30), "My Target Name"));
             result.Should().Be("foo-2021-05-31-bar");
@@ -44,7 +44,7 @@ namespace SessionMetaData.NINAPlugin.Test {
             result.Should().Be("fooMy_Target_Name-Foobar");
 
             result = Utility.Utility.FileNameTokenSubstitution("Acquisition/Details-$$DATEMINUS12$$", GenImageMetaData(new DateTime(2021, 6, 1, 12, 32, 30), "My Target Name"));
-            result.Should().Be("AcquisitionDetails-2021-06-01");
+            result.Should().Be("AcquisitionDetails-2021-05-31");
 
             result = Utility.Utility.FileNameTokenSubstitution("AcquisitionDetails:|<>\"/\\?*-$$TARGETNAME$$", GenImageMetaData(new DateTime(2021, 6, 1, 12, 32, 30), "My Target Name"));
             result.Should().Be("AcquisitionDetails-My_Target_Name");

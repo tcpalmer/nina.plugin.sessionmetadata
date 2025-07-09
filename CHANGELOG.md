@@ -1,5 +1,9 @@
 # Session Metadata
 
+## 2.6.2.0 - 2025-07-09
+* Fixed file pattern substitution for date/time: wasn't converting to local time.
+* Added support for $$DATEUTC$$, $$TIME$$, $$TIMEUTC$$ pattern substitutions.
+
 ## 2.6.1.0 - 2025-07-03
 * Fixed problem when mount isn't connected.
 

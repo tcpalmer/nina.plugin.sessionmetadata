@@ -10,7 +10,7 @@ namespace SessionMetaData.NINAPlugin.Utility {
 
         /// <summary>
         /// Uses the core NINA image file pattern tokens to support dynamic file names.  The following tokens are supported:
-        /// $$DATE$$, $$DATEMINUS12$$, $$DATETIME$$, $$TARGETNAME$$, $$FILTER$$
+        /// $$DATE$$, $$DATEUTC$$, $$DATEMINUS12$$, $$DATETIME$$, $$TIME$$, $$TIMEUTC$$, $$TARGETNAME$$, $$FILTER$$.
         /// </summary>
         /// <param name="fileName"></param>
         /// <param name="eventArgs"></param>
@@ -23,12 +23,15 @@ namespace SessionMetaData.NINAPlugin.Utility {
             ImageMetaData metadata = eventArgs.MetaData;
             ImagePatterns p = new ImagePatterns();
 
-            p.Set(ImagePatternKeys.DateTime, metadata.Image.ExposureStart.ToString("yyyy-MM-dd_HH-mm-ss"));
+            p.Set(ImagePatternKeys.DateTime, metadata.Image.ExposureStart.ToLocalTime().ToString("yyyy-MM-dd_HH-mm-ss"));
             p.Set(ImagePatternKeys.TargetName, metadata.Target.Name);
             p.Set(ImagePatternKeys.Filter, eventArgs.Filter);
-            p.Set(ImagePatternKeys.Date, metadata.Image.ExposureStart.ToString("yyyy-MM-dd"));
+            p.Set(ImagePatternKeys.Date, metadata.Image.ExposureStart.ToLocalTime().ToString("yyyy-MM-dd"));
+            p.Set(ImagePatternKeys.DateUtc, metadata.Image.ExposureStart.ToUniversalTime().ToString("yyyy-MM-dd"));
+            p.Set(ImagePatternKeys.Time, metadata.Image.ExposureStart.ToLocalTime().ToString("HH-mm-ss"));
+            p.Set(ImagePatternKeys.TimeUtc, metadata.Image.ExposureStart.ToUniversalTime().ToString("HH-mm-ss"));
             if (metadata.Image.ExposureStart > DateTime.MinValue.AddHours(12)) {
-                p.Set(ImagePatternKeys.DateMinus12, metadata.Image.ExposureStart.AddHours(-12).ToString("yyyy-MM-dd"));
+                p.Set(ImagePatternKeys.DateMinus12, metadata.Image.ExposureStart.ToLocalTime().AddHours(-12).ToString("yyyy-MM-dd"));
             }
 
             // Strip invalid characters before core method (which would replace them with '_')
