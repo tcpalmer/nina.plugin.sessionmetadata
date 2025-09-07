@@ -249,7 +249,7 @@ namespace SessionMetaData.NINAPlugin {
             public string ExposureStartUTC { get; set; }
             public double MountRA { get; set; }
             public double MountDec { get; set; }
-
+            public string ImageType { get; set; }
             public ImageMetaDataRecord() {
             }
 
@@ -302,6 +302,8 @@ namespace SessionMetaData.NINAPlugin {
                     MountRA = 0;
                     MountDec = 0;
                 }
+
+                ImageType = msg.MetaData.Image.ImageType;
             }
 
             private double GetHocusFocusMetric(IStarDetectionAnalysis starDetectionAnalysis, string propertyName) {
