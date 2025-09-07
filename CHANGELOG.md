@@ -1,5 +1,8 @@
 # Session Metadata
 
+## 2.6.3.0 - 2025-09-07
+* Added ImageType to image metadata record.
+
 ## 2.6.2.0 - 2025-07-09
 * Fixed file pattern substitution for date/time: wasn't converting to local time.
 * Added support for $$DATEUTC$$, $$TIME$$, $$TIMEUTC$$ pattern substitutions.
