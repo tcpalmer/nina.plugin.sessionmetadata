@@ -70,7 +70,7 @@ namespace SessionMetaData.NINAPlugin {
                         csv.NextRecord();
                     }
                 } else {
-                    Logger.Warning($"acquisition file already exists, will not overwrite: {AcquisitionFileName}");
+                    Logger.Debug($"acquisition file already exists, will not overwrite: {AcquisitionFileName}");
                 }
             }
 
@@ -90,7 +90,7 @@ namespace SessionMetaData.NINAPlugin {
                         serializer.Serialize(writer, Record);
                     }
                 } else {
-                    Logger.Warning($"acquisition file already exists, will not overwrite: {AcquisitionFileName}");
+                    Logger.Debug($"acquisition file already exists, will not overwrite: {AcquisitionFileName}");
                 }
             }
         }
@@ -250,6 +250,7 @@ namespace SessionMetaData.NINAPlugin {
             public double MountRA { get; set; }
             public double MountDec { get; set; }
             public string ImageType { get; set; }
+
             public ImageMetaDataRecord() {
             }
 

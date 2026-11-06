@@ -1,5 +1,8 @@
 # Session Metadata
 
+## 2.6.4.0 - 2026-11-06
+* Changed file overwrite message log level to avoid warning overload.
+
 ## 2.6.3.0 - 2025-09-07
 * Added ImageType to image metadata record.
 
